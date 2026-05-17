@@ -1,0 +1,24 @@
+{
+    "dashboard": "Dasarbor",
+    "receivables_data": "Data Piutang",
+    "add_receivable": "Tambah Piutang",
+    "customer_name": "Nama Pelanggan",
+    "amount": "Jumlah Hutang",
+    "transaction_date": "Tanggal Transaksi",
+    "due_date": "Tanggal Jatuh Tempo",
+    "status": "Status Pembayaran",
+    "notes": "Catatan",
+    "action": "Aksi",
+    "search": "Cari pelanggan atau status...",
+    
+    "active_receivables": "Piutang Aktif",
+    "due_soon": "Akan Jatuh Tempo",
+    "overdue": "Terlambat",
+    "paid": "Lunas",
+    "unpaid": "Belum Lunas",
+    
+    "notification": "Notifikasi Pengingat",
+    "no_notification": "Tidak ada pengingat baru hari ini.",
+    "warning_due_soon": "Piutang atas nama :name akan jatuh tempo dalam :days hari lagi!",
+    "warning_overdue": "Piutang atas nama :name telah terlambat selama :days hari!"
+}

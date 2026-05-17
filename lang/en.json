@@ -1,0 +1,24 @@
+{
+    "dashboard": "Dashboard",
+    "receivables_data": "Receivables Data",
+    "add_receivable": "Add Receivable",
+    "customer_name": "Customer Name",
+    "amount": "Amount",
+    "transaction_date": "Transaction Date",
+    "due_date": "Due Date",
+    "status": "Payment Status",
+    "notes": "Notes",
+    "action": "Action",
+    "search": "Search customer or status...",
+    
+    "active_receivables": "Active Receivables",
+    "due_soon": "Due Soon",
+    "overdue": "Overdue",
+    "paid": "Paid",
+    "unpaid": "Unpaid",
+    
+    "notification": "Reminder Notification",
+    "no_notification": "No new reminders today.",
+    "warning_due_soon": "Receivable for :name is due in :days days!",
+    "warning_overdue": "Receivable for :name is overdue by :days days!"
+}

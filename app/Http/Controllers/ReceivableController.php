@@ -14,7 +14,7 @@ class ReceivableController extends Controller
     /**
      * Menampilkan daftar piutang dengan fitur pencarian dan filter status.
      */
-    public function index(Request $request): View
+    public function index(Request $request): View|string
     {
         $query = Receivable::with('customer');
 
@@ -42,9 +42,15 @@ class ReceivableController extends Controller
             }
         }
 
-        // Ambil data dengan pagination (10 data per halaman) dan pertahankan query string di URL
+        // Ambil data dengan pagination (10 data per halaman)
         $receivables = $query->latest()->paginate(10)->withQueryString();
 
+        // 🟢 JIKA REQUEST DARI AJAX (Pencarian Real-time Alpine), KEMBALIKAN TABEL SAJA
+        if ($request->ajax()) {
+            return view('receivables.partials.table', compact('receivables'))->render();
+        }
+
+        // JIKA REQUEST BIASA (Load halaman pertama kali), KEMBALIKAN SELURUH HALAMAN
         return view('receivables.index', compact('receivables'));
     }
 
@@ -80,6 +86,53 @@ class ReceivableController extends Controller
         ]);
 
         return redirect()->route('receivables.index')->with('success', 'Piutang baru berhasil disimpan!');
+    }
+
+    /**
+     * Menampilkan form edit data piutang.
+     */
+    public function edit(int $id): View
+    {
+        $receivable = Receivable::findOrFail($id);
+        $customers = Customer::orderBy('name', 'asc')->get();
+        
+        return view('receivables.edit', compact('receivable', 'customers'));
+    }
+
+    /**
+     * Memperbarui data piutang di database.
+     */
+    public function update(Request $request, int $id): RedirectResponse
+    {
+        $validated = $request->validate([
+            'customer_id'      => 'required|exists:customers,id',
+            'amount'           => 'required|numeric|min:1',
+            'transaction_date' => 'required|date',
+            'due_date'         => 'required|date|after_or_equal:transaction_date',
+            'notes'            => 'nullable|string',
+        ]);
+
+        $receivable = Receivable::findOrFail($id);
+        $receivable->update([
+            'customer_id'      => $validated['customer_id'],
+            'amount'           => $validated['amount'],
+            'transaction_date' => $validated['transaction_date'],
+            'due_date'         => $validated['due_date'],
+            'notes'            => $validated['notes'],
+        ]);
+
+        return redirect()->route('receivables.index')->with('success', 'Data piutang berhasil diperbarui!');
+    }
+
+    /**
+     * Menghapus data piutang secara permanen.
+     */
+    public function destroy(int $id): RedirectResponse
+    {
+        $receivable = Receivable::findOrFail($id);
+        $receivable->delete();
+
+        return redirect()->back()->with('success', 'Data piutang berhasil dihapus!');
     }
 
     /**

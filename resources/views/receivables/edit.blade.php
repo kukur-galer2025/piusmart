@@ -8,39 +8,26 @@
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 mr-1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" /></svg>
             Kembali ke Data Piutang
         </a>
-        <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-gray-900 mt-2">{{ __('add_receivable') }}</h1>
+        <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-gray-900 mt-2">Edit Data Piutang</h1>
     </div>
 
     <div class="bg-white p-5 sm:p-6 md:p-8 rounded-2xl border border-gray-100 shadow-sm">
-        <form action="{{ route('receivables.store') }}" method="POST" class="space-y-5">
+        <form action="{{ route('receivables.update', $receivable->id) }}" method="POST" class="space-y-5">
             @csrf
+            @method('PUT')
 
             <div>
-                <label for="customer_id" class="block text-sm font-semibold text-gray-700 mb-1.5">{{ __('customer_name') }}</label>
-                <div class="relative">
-                    <div class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-gray-400">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
-                        </svg>
-                    </div>
-                    <select name="customer_id" id="customer_id" required
-                            class="w-full pl-11 pr-4 py-2.5 text-sm bg-gray-50 border @error('customer_id') border-rose-500 @else border-gray-200 @enderror rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-all appearance-none cursor-pointer">
-                        <option value="">-- Pilih Pelanggan --</option>
-                        @foreach($customers as $customer)
-                            <option value="{{ $customer->id }}" {{ old('customer_id') == $customer->id ? 'selected' : '' }}>
-                                {{ $customer->name }} (📞 {{ $customer->phone ?? '-' }})
-                            </option>
-                        @endforeach
-                    </select>
-                    <div class="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 text-gray-500">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
-                        </svg>
-                    </div>
+                <label class="block text-sm font-semibold text-gray-700 mb-1.5">{{ __('customer_name') }}</label>
+                
+                <div class="flex items-center w-full px-4 py-2.5 text-sm bg-gray-100 border border-gray-200 rounded-xl text-gray-500 cursor-not-allowed select-none">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 mr-2.5 text-gray-400 shrink-0">
+                        <path fill-rule="evenodd" d="M12 1.5a5.25 5.25 0 0 0-5.25 5.25v3a3 3 0 0 0-3 3v6.75a3 3 0 0 0 3 3h10.5a3 3 0 0 0 3-3v-6.75a3 3 0 0 0-3-3v-3c0-2.9-2.35-5.25-5.25-5.25Zm3.75 8.25v-3a3.75 3.75 0 1 0-7.5 0v3h7.5Z" clip-rule="evenodd" />
+                    </svg>
+                    <span class="truncate">{{ $receivable->customer->name }} (📞 {{ $receivable->customer->phone ?? '-' }})</span>
                 </div>
-                @error('customer_id')
-                    <p class="text-xs text-rose-600 mt-1">{{ $message }}</p>
-                @enderror
+                
+                <p class="text-[11px] text-gray-400 mt-1.5">Identitas pelanggan tidak dapat diubah. Hapus transaksi jika terjadi kesalahan input.</p>
+                <input type="hidden" name="customer_id" value="{{ $receivable->customer_id }}">
             </div>
 
             <div>
@@ -52,12 +39,10 @@
                         </svg>
                         <span class="text-sm font-semibold text-gray-500 ml-1.5">Rp</span>
                     </div>
-                    <input type="number" name="amount" id="amount" value="{{ old('amount') }}" required min="1" placeholder="0"
+                    <input type="number" name="amount" id="amount" value="{{ old('amount', $receivable->amount) }}" required min="1"
                            class="w-full pl-[4.5rem] pr-4 py-2.5 text-sm font-medium text-gray-900 bg-gray-50 border @error('amount') border-rose-500 @else border-gray-200 @enderror rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-all">
                 </div>
-                @error('amount')
-                    <p class="text-xs text-rose-600 mt-1">{{ $message }}</p>
-                @enderror
+                @error('amount') <p class="text-xs text-rose-600 mt-1">{{ $message }}</p> @enderror
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
@@ -69,12 +54,10 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5m-9-6h.008v.008H12v-.008ZM12 15h.008v.008H12V15Zm0 2.25h.008v.008H12v-.008ZM9.75 15h.008v.008H9.75V15Zm0 2.25h.008v.008H9.75v-.008ZM7.5 15h.008v.008H7.5V15Zm0 2.25h.008v.008H7.5v-.008Zm6.75-4.5h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V15Zm0 2.25h.008v.008h-.008v-.008Zm2.25-4.5h.008v.008H16.5v-.008Zm0 2.25h.008v.008H16.5V15Z" />
                             </svg>
                         </div>
-                        <input type="date" name="transaction_date" id="transaction_date" value="{{ old('transaction_date', date('Y-m-d')) }}" required
+                        <input type="date" name="transaction_date" id="transaction_date" value="{{ old('transaction_date', $receivable->transaction_date->format('Y-m-d')) }}" required
                                class="w-full pl-11 pr-4 py-2.5 text-sm text-gray-900 bg-gray-50 border @error('transaction_date') border-rose-500 @else border-gray-200 @enderror rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-all">
                     </div>
-                    @error('transaction_date')
-                        <p class="text-xs text-rose-600 mt-1">{{ $message }}</p>
-                    @enderror
+                    @error('transaction_date') <p class="text-xs text-rose-600 mt-1">{{ $message }}</p> @enderror
                 </div>
 
                 <div>
@@ -85,12 +68,10 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                             </svg>
                         </div>
-                        <input type="date" name="due_date" id="due_date" value="{{ old('due_date') }}" required
+                        <input type="date" name="due_date" id="due_date" value="{{ old('due_date', $receivable->due_date->format('Y-m-d')) }}" required
                                class="w-full pl-11 pr-4 py-2.5 text-sm text-gray-900 bg-gray-50 border @error('due_date') border-rose-500 @else border-gray-200 @enderror rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-all">
                     </div>
-                    @error('due_date')
-                        <p class="text-xs text-rose-600 mt-1">{{ $message }}</p>
-                    @enderror
+                    @error('due_date') <p class="text-xs text-rose-600 mt-1">{{ $message }}</p> @enderror
                 </div>
             </div>
 
@@ -103,11 +84,9 @@
                         </svg>
                     </div>
                     <textarea name="notes" id="notes" rows="3" placeholder="Tambahkan keterangan transaksi jika ada..."
-                              class="w-full pl-11 pr-4 py-2.5 text-sm text-gray-900 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-all">{{ old('notes') }}</textarea>
+                              class="w-full pl-11 pr-4 py-2.5 text-sm text-gray-900 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-all">{{ old('notes', $receivable->notes) }}</textarea>
                 </div>
-                @error('notes')
-                    <p class="text-xs text-rose-600 mt-1">{{ $message }}</p>
-                @enderror
+                @error('notes') <p class="text-xs text-rose-600 mt-1">{{ $message }}</p> @enderror
             </div>
 
             <div class="flex flex-col-reverse sm:flex-row items-center justify-end gap-3 pt-5 border-t border-gray-100 mt-2">
@@ -115,7 +94,7 @@
                     Batal
                 </a>
                 <button type="submit" class="w-full sm:w-auto px-6 py-2.5 text-sm font-semibold text-white bg-emerald-600 rounded-xl hover:bg-emerald-700 shadow-sm transition-colors cursor-pointer">
-                    Simpan Transaksi
+                    Simpan Perubahan
                 </button>
             </div>
         </form>

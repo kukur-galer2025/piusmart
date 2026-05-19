@@ -215,7 +215,7 @@
         <table class="signature-table">
             <tr>
                 <td>
-                    <p style="margin-bottom: 50px;">Surakarta, {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}<br>Eksekutif Pemeriksa,</p>
+                    <p style="margin-bottom: 50px;">Purwokerto, {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}<br>Eksekutif Pemeriksa,</p>
                     <p class="font-bold uppercase" style="text-decoration: underline; margin-bottom: 2px;">{{ Auth::user()->name ?? 'Administrator' }}</p>
                     <p style="font-size: 8px; color: #64748b; text-transform: uppercase;">Piusmart Control Authority</p>
                 </td>

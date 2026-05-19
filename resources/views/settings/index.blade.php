@@ -38,7 +38,7 @@
                         {{ __('daily_execution_time') }}
                     </label>
                     
-                    <div class="w-full sm:max-w-xs">
+                    <div class="max-w-[180px]">
                         <input type="time" name="notification_time" id="notification_time" 
                                value="{{ old('notification_time', $notificationTime) }}" required
                                class="w-full px-4 py-2.5 text-sm font-bold text-gray-900 dark:text-white bg-gray-50 dark:bg-slate-900 border @error('notification_time') border-rose-500 @else border-gray-200 dark:border-slate-600 @enderror rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white dark:focus:bg-slate-800 [color-scheme:light] dark:[color-scheme:dark]">

@@ -152,16 +152,22 @@
         function getChartTheme() {
             return document.documentElement.classList.contains('dark') ? 'dark' : 'light';
         }
+
+        function getChartBackground() {
+            return document.documentElement.classList.contains('dark') ? '#1e293b' : '#ffffff';
+        }
         
         // Listen for dark mode changes
         const observer = new MutationObserver(function(mutations) {
             mutations.forEach(function(mutation) {
                 if (mutation.attributeName === "class") {
                     const themeMode = getChartTheme();
+                    const bgColor = getChartBackground();
                     for (let key in chartInstances) {
                         if (chartInstances[key]) {
                             chartInstances[key].updateOptions({
-                                theme: { mode: themeMode }
+                                theme: { mode: themeMode },
+                                chart: { background: bgColor }
                             });
                         }
                     }
@@ -177,7 +183,7 @@
         var trendOptions = {
             series: [{ name: 'Total', data: trendTotals }],
             theme: { mode: getChartTheme() },
-            chart: { type: 'area', height: 320, width: '100%', fontFamily: 'inherit', toolbar: { show: false }, background: 'transparent' },
+            chart: { type: 'area', height: 320, width: '100%', fontFamily: 'inherit', toolbar: { show: false }, background: getChartBackground() },
             colors: ['#0ea5e9'], 
             fill: { type: 'gradient', gradient: { shadeIntensity: 1, opacityFrom: 0.4, opacityTo: 0.05, stops: [0, 100] } },
             dataLabels: { enabled: false },
@@ -217,7 +223,7 @@
                 width: '100%',
                 fontFamily: 'inherit', 
                 toolbar: { show: false }, 
-                background: 'transparent' 
+                background: getChartBackground() 
             },
             colors: ['#8b5cf6'], 
             plotOptions: { bar: { borderRadius: 4, horizontal: true } },
@@ -267,7 +273,7 @@
         var komposisiOptions = {
             series: [active, dueSoon, overdue],
             theme: { mode: getChartTheme() },
-            chart: { type: 'donut', height: 320, width: '100%', fontFamily: 'inherit', background: 'transparent' },
+            chart: { type: 'donut', height: 320, width: '100%', fontFamily: 'inherit', background: getChartBackground() },
             labels: ['{{ __('active_transactions') }}', '{{ __('needs_billing') }}', '{{ __('past_due_date') }}'],
             colors: ['#3b82f6', '#f59e0b', '#f43f5e'],
             plotOptions: { pie: { donut: { size: '75%' } } },
@@ -293,7 +299,7 @@
         var statusOptions = {
             series: [paidAmount, unpaidAmount],
             theme: { mode: getChartTheme() },
-            chart: { type: 'pie', height: 320, width: '100%', fontFamily: 'inherit', background: 'transparent' },
+            chart: { type: 'pie', height: 320, width: '100%', fontFamily: 'inherit', background: getChartBackground() },
             labels: ['{{ __('paid') }}', '{{ __('unpaid') }}'],
             colors: ['#10b981', '#f43f5e'], 
             dataLabels: { enabled: true, style: { fontSize: '12px', fontWeight: 'bold' }, dropShadow: { enabled: true } },

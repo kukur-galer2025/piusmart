@@ -174,16 +174,22 @@
         function getChartTheme() {
             return document.documentElement.classList.contains('dark') ? 'dark' : 'light';
         }
+
+        function getChartBackground() {
+            return document.documentElement.classList.contains('dark') ? '#1e293b' : '#ffffff';
+        }
         
         // Listen for dark mode changes to update charts
         const observer = new MutationObserver(function(mutations) {
             mutations.forEach(function(mutation) {
                 if (mutation.attributeName === "class") {
                     const themeMode = getChartTheme();
+                    const bgColor = getChartBackground();
                     for (let key in chartInstances) {
                         if (chartInstances[key]) {
                             chartInstances[key].updateOptions({
-                                theme: { mode: themeMode }
+                                theme: { mode: themeMode },
+                                chart: { background: bgColor }
                             });
                         }
                     }
@@ -199,7 +205,7 @@
                 { name: '{{ __("stat_total_paid") }}', data: {!! json_encode($trendPaidAmounts) !!} }
             ],
             theme: { mode: getChartTheme() },
-            chart: { type: 'area', height: 320, width: '100%', fontFamily: 'inherit', toolbar: { show: false }, background: 'transparent' },
+            chart: { type: 'area', height: 320, width: '100%', fontFamily: 'inherit', toolbar: { show: false }, background: getChartBackground() },
             colors: ['#818cf8', '#34d399'],
             fill: { type: 'gradient', gradient: { shadeIntensity: 1, opacityFrom: 0.4, opacityTo: 0.05, stops: [0, 100] } },
             stroke: { curve: 'smooth', width: 3 },
@@ -220,7 +226,7 @@
         chartInstances['monthly-paid'] = new ApexCharts(document.querySelector("#chart-monthly-paid"), {
             series: [{ name: '{{ __("stat_total_paid") }}', data: {!! json_encode($paidMonthlyAmounts) !!} }],
             theme: { mode: getChartTheme() },
-            chart: { type: 'bar', height: 320, width: '100%', fontFamily: 'inherit', toolbar: { show: false }, background: 'transparent' },
+            chart: { type: 'bar', height: 320, width: '100%', fontFamily: 'inherit', toolbar: { show: false }, background: getChartBackground() },
             colors: ['#34d399'],
             plotOptions: { bar: { borderRadius: 5, columnWidth: '55%' } },
             dataLabels: { enabled: false },
@@ -238,7 +244,7 @@
         chartInstances['top'] = new ApexCharts(document.querySelector("#chart-top"), {
             series: [{ name: '{{ __("stat_total_unpaid") }}', data: {!! json_encode($topTotals) !!} }],
             theme: { mode: getChartTheme() },
-            chart: { type: 'bar', height: 320, width: '100%', fontFamily: 'inherit', toolbar: { show: false }, background: 'transparent' },
+            chart: { type: 'bar', height: 320, width: '100%', fontFamily: 'inherit', toolbar: { show: false }, background: getChartBackground() },
             colors: ['#fbbf24'],
             plotOptions: { bar: { borderRadius: 4, horizontal: true } },
             dataLabels: { enabled: false },
@@ -263,7 +269,7 @@
         chartInstances['status'] = new ApexCharts(document.querySelector("#chart-status"), {
             series: [{{ $statusPaid }}, {{ $statusUnpaid }}, {{ $statusDueSoon }}, {{ $statusOverdue }}],
             theme: { mode: getChartTheme() },
-            chart: { type: 'donut', height: 320, width: '100%', fontFamily: 'inherit', background: 'transparent' },
+            chart: { type: 'donut', height: 320, width: '100%', fontFamily: 'inherit', background: getChartBackground() },
             labels: ['{{ __("paid") }}', '{{ __("unpaid") }}', '{{ __("due_soon") }}', '{{ __("overdue") }}'],
             colors: ['#34d399', '#60a5fa', '#fbbf24', '#fb7185'],
             plotOptions: { pie: { donut: { size: '75%' } } },
@@ -282,7 +288,7 @@
         chartInstances['pie'] = new ApexCharts(document.querySelector("#chart-pie"), {
             series: [{{ $paidAmount }}, {{ $unpaidAmount }}],
             theme: { mode: getChartTheme() },
-            chart: { type: 'pie', height: 320, width: '100%', fontFamily: 'inherit', background: 'transparent' },
+            chart: { type: 'pie', height: 320, width: '100%', fontFamily: 'inherit', background: getChartBackground() },
             labels: ['{{ __("paid") }}', '{{ __("unpaid") }}'],
             colors: ['#34d399', '#fb7185'],
             dataLabels: { enabled: true, style: { fontSize: '12px', fontWeight: 'bold' }, dropShadow: { enabled: true } },

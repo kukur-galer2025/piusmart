@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Data Pelanggan - Piusmart Executive</title>
+    <title>{{ __('pdf_customer_report_title') }}</title>
     <style>
         @page { margin: 40px 50px; }
         body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 11px; color: #334155; line-height: 1.4; }
@@ -34,28 +34,28 @@
             </td>
             <td class="company-info">
                 <div class="company-name">PIUSMART EXECUTIVE</div>
-                <div class="company-address">Sistem Manajemen Pencatatan Piutang Usaha Terpadu<br>Dokumen dicetak secara otomatis oleh sistem</div>
+                <div class="company-address">{{ __('pdf_company_desc') }}<br>{{ __('pdf_customer_company_doc') }}</div>
             </td>
         </tr>
     </table>
 
-    <div class="report-title">MASTER DATA PELANGGAN / DEBITUR</div>
+    <div class="report-title">{{ __('pdf_customer_title') }}</div>
 
     <table class="meta-table">
         <tr>
-            <td width="60%"><strong>Waktu Cetak:</strong> {{ $dateReport }} WIB<br><strong>Total Pelanggan:</strong> {{ $customers->count() }} Orang</td>
-            <td width="40%" style="text-align: right;"><strong>Klasifikasi Dokumen:</strong> Internal Administrasi<br><strong>Dicetak Oleh:</strong> {{ Auth::user()->name ?? 'Administrator' }}</td>
+            <td width="60%"><strong>{{ __('pdf_print_time') }}</strong> {{ $dateReport }} WIB<br><strong>{{ __('pdf_total_customers') }}</strong> {{ $customers->count() }} {{ __('pdf_people') }}</td>
+            <td width="40%" style="text-align: right;"><strong>{{ __('pdf_doc_classification') }}</strong> {{ __('pdf_internal_admin') }}<br><strong>{{ __('pdf_printed_by') }}</strong> {{ Auth::user()->name ?? 'Administrator' }}</td>
         </tr>
     </table>
 
     <table class="data-table">
         <thead>
             <tr>
-                <th style="width: 5%; text-align: center;">No</th>
-                <th style="width: 25%;">Nama Lengkap</th>
-                <th style="width: 20%;">Nomor HP/WA</th>
-                <th style="width: 35%;">Alamat</th>
-                <th style="width: 15%; text-align: center;">Tgl Terdaftar</th>
+                <th style="width: 5%; text-align: center;">{{ __('pdf_no') }}</th>
+                <th style="width: 25%;">{{ __('pdf_full_name') }}</th>
+                <th style="width: 20%;">{{ __('pdf_phone_wa') }}</th>
+                <th style="width: 35%;">{{ __('pdf_address') }}</th>
+                <th style="width: 15%; text-align: center;">{{ __('pdf_registered_date') }}</th>
             </tr>
         </thead>
         <tbody>
@@ -69,7 +69,7 @@
                     <td class="text-center">{{ $item->created_at->format('d/m/Y') }}</td>
                 </tr>
             @empty
-                <tr><td colspan="5" class="text-center" style="padding: 25px; color: #94a3b8;">Tidak ada data pelanggan ditemukan.</td></tr>
+                <tr><td colspan="5" class="text-center" style="padding: 25px; color: #94a3b8;">{{ __('pdf_no_customer_data') }}</td></tr>
             @endforelse
         </tbody>
     </table>
@@ -77,7 +77,7 @@
     <table class="signature-area">
         <tr>
             <td>
-                <p>Mengetahui,</p><br><br><br><br>
+                <p>{{ __('pdf_signature_acknowledge') }}</p><br><br><br><br>
                 <p class="font-bold uppercase" style="text-decoration: underline;">{{ Auth::user()->name ?? 'Administrator' }}</p>
                 <p style="font-size: 9px; color: #64748b;">Piusmart Executive Control</p>
             </td>

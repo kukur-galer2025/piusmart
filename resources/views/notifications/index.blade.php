@@ -11,7 +11,7 @@
         activeTab: 'belum_dibaca',
         showConfirmModal: false, 
         showSuccessModal: {{ session('success') ? 'true' : 'false' }},
-        successMessage: '{{ session('success') }}'
+        successMessage: {{ session('success') ? Js::from(session('success')) : "''" }}
      }">
     
     {{-- Header --}}
@@ -218,30 +218,36 @@
         </div>
     </div>
 
-    {{-- Modal Sukses --}}
+    {{-- Modal Sukses (Fixed: safe JS escaping, centered on mobile, dark mode contrast) --}}
     <div x-show="showSuccessModal" 
-         class="fixed inset-0 z-[100] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-900/60 backdrop-blur-sm" 
+         x-transition:enter="transition ease-out duration-200"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="transition ease-in duration-150"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"
+         class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm" 
          x-cloak>
         <div @click.away="showSuccessModal = false" 
              x-show="showSuccessModal"
-             x-transition:enter="transition ease-out duration-200" 
-             x-transition:enter-start="opacity-0 translate-y-8 sm:scale-90" 
-             x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
-             x-transition:leave="transition ease-in duration-150" 
-             x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100" 
-             x-transition:leave-end="opacity-0 translate-y-8 sm:scale-90"
-             class="bg-white dark:bg-slate-800 rounded-t-3xl sm:rounded-3xl shadow-2xl w-full sm:max-w-sm p-6 sm:p-8 text-center relative overflow-hidden border-t border-emerald-100 dark:border-slate-700 sm:border">
+             x-transition:enter="transition ease-out duration-300" 
+             x-transition:enter-start="opacity-0 scale-90" 
+             x-transition:enter-end="opacity-100 scale-100"
+             x-transition:leave="transition ease-in duration-200" 
+             x-transition:leave-start="opacity-100 scale-100" 
+             x-transition:leave-end="opacity-0 scale-90"
+             class="bg-white dark:bg-slate-800 rounded-3xl shadow-2xl w-full max-w-[340px] sm:max-w-sm p-6 sm:p-8 text-center relative overflow-hidden border border-emerald-200/50 dark:border-emerald-500/20">
             
             <div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-emerald-400 to-teal-500"></div>
             
-            <div class="mx-auto flex items-center justify-center h-14 w-14 rounded-full bg-emerald-100 dark:bg-emerald-900/30 mb-5 ring-4 ring-emerald-50 dark:ring-slate-800">
+            <div class="mx-auto flex items-center justify-center h-14 w-14 rounded-full bg-emerald-100 dark:bg-emerald-500/20 mb-5 ring-4 ring-emerald-50 dark:ring-emerald-500/10">
                 <svg class="h-7 w-7 text-emerald-600 dark:text-emerald-400" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>
             </div>
             
             <h3 class="text-xl font-extrabold text-slate-900 dark:text-white">{{ __('success_title') }}</h3>
-            <p class="text-sm text-slate-500 dark:text-gray-400 mt-2.5 font-medium leading-relaxed" x-text="successMessage"></p>
+            <p class="text-sm text-slate-500 dark:text-slate-300 mt-2.5 font-medium leading-relaxed" x-text="successMessage"></p>
             
-            <button @click="showSuccessModal = false" class="mt-6 w-full px-4 py-3 text-sm font-bold text-white bg-slate-900 dark:bg-slate-700 rounded-xl hover:bg-slate-800 dark:hover:bg-slate-600 cursor-pointer">{{ __('close') }}</button>
+            <button @click="showSuccessModal = false" class="mt-6 w-full px-4 py-3 text-sm font-bold text-white bg-emerald-600 dark:bg-emerald-500 rounded-xl hover:bg-emerald-700 dark:hover:bg-emerald-600 cursor-pointer shadow-md shadow-emerald-600/25 active:scale-[0.97] transition-transform">{{ __('close') }}</button>
         </div>
     </div>
 

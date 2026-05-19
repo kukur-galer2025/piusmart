@@ -11,7 +11,7 @@
         <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-gray-900 dark:text-white mt-2">{{ __('edit_receivable_data') }}</h1>
     </div>
 
-    <div class="bg-white dark:bg-slate-800 p-5 sm:p-6 md:p-8 rounded-2xl border border-gray-100 dark:border-slate-700 shadow-sm">
+    <div class="bg-white dark:bg-slate-800 p-5 sm:p-6 md:p-8 rounded-2xl border border-gray-100 dark:border-slate-700 shadow-sm overflow-hidden">
         <form action="{{ route('receivables.update', $receivable->id) }}" method="POST" class="space-y-5">
             @csrf
             @method('PUT')
@@ -57,11 +57,11 @@
                 Grid 2 kolom di iPhone ~375px hanya beri ~161px per kolom → overflow.
                 Solusi: stack 1 kolom penuh + hapus icon absolut + tambah style box-sizing.
             --}}
-            <div>
+            <div class="overflow-hidden">
                 <label for="transaction_date" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">{{ __('transaction_date') }}</label>
                 <input type="date" name="transaction_date" id="transaction_date"
                        value="{{ old('transaction_date', $receivable->transaction_date->format('Y-m-d')) }}" required
-                       style="box-sizing: border-box;"
+                       style="box-sizing: border-box; max-width: 100%;"
                        class="w-full min-w-0 px-4 py-2.5 text-sm text-gray-900 dark:text-white bg-gray-50 dark:bg-slate-900 border @error('transaction_date') border-rose-500 dark:border-rose-500 @else border-gray-200 dark:border-slate-600 @enderror rounded-xl focus:outline-none focus:ring-2 @error('transaction_date') focus:ring-rose-500 @else focus:ring-emerald-500 @enderror focus:bg-white dark:focus:bg-slate-800 [color-scheme:light] dark:[color-scheme:dark]">
                 <p class="text-[11px] text-gray-400 dark:text-slate-500 mt-1 font-medium pl-1">💡 {{ __('transaction_date_helper') }}</p>
                 @error('transaction_date') 
@@ -72,11 +72,11 @@
                 @enderror
             </div>
 
-            <div>
+            <div class="overflow-hidden">
                 <label for="due_date" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">{{ __('due_date') }}</label>
                 <input type="date" name="due_date" id="due_date"
                        value="{{ old('due_date', $receivable->due_date->format('Y-m-d')) }}" required
-                       style="box-sizing: border-box;"
+                       style="box-sizing: border-box; max-width: 100%;"
                        class="w-full min-w-0 px-4 py-2.5 text-sm text-gray-900 dark:text-white bg-gray-50 dark:bg-slate-900 border @error('due_date') border-rose-500 dark:border-rose-500 @else border-gray-200 dark:border-slate-600 @enderror rounded-xl focus:outline-none focus:ring-2 @error('due_date') focus:ring-rose-500 @else focus:ring-emerald-500 @enderror focus:bg-white dark:focus:bg-slate-800 [color-scheme:light] dark:[color-scheme:dark]">
                 <p class="text-[11px] text-gray-400 dark:text-slate-500 mt-1 font-medium pl-1">💡 {{ __('due_date_helper') }}</p>
                 @error('due_date') 

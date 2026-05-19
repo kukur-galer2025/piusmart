@@ -205,28 +205,28 @@ class ReceivableController extends Controller
             });
         }
 
-        // Filter Status & Mapping Label untuk Dokumen Cetak
-        $filterStatus = 'Semua Status';
+        // Filter Status & Mapping Label untuk Dokumen Cetak (Multilingual)
+        $filterStatus = __('pdf_filter_all_status');
         if ($request->filled('status')) {
             $status = $request->status;
             $today = Carbon::today();
             if ($status === 'paid') { 
                 $query->where('is_paid', true); 
-                $filterStatus = 'Lunas';
+                $filterStatus = __('pdf_filter_paid');
             } elseif ($status === 'overdue') { 
                 $query->where('is_paid', false)->where('due_date', '<', $today); 
-                $filterStatus = 'Terlambat (Overdue)';
+                $filterStatus = __('pdf_filter_overdue');
             } elseif ($status === 'due_soon') { 
                 $query->where('is_paid', false)->whereBetween('due_date', [$today, Carbon::today()->addDays(3)]); 
-                $filterStatus = 'Akan Jatuh Tempo'; // Pembersihan Label Kaku H-3 Berhasil
+                $filterStatus = __('pdf_filter_due_soon');
             } elseif ($status === 'unpaid') { 
                 $query->where('is_paid', false); 
-                $filterStatus = 'Belum Lunas';
+                $filterStatus = __('pdf_filter_unpaid');
             }
         }
 
         // Filter Bulan & Mapping Label Cetak (DI-FIX MENGGUNAKAN INT CASTING)
-        $filterPeriode = 'Semua Periode';
+        $filterPeriode = __('pdf_filter_all_period');
         if ($request->filled('month')) { 
             $query->whereMonth('transaction_date', $request->month); 
             $filterPeriode = Carbon::create()->month((int) $request->month)->translatedFormat('F');
@@ -235,7 +235,7 @@ class ReceivableController extends Controller
         // Filter Tahun
         if ($request->filled('year')) { 
             $query->whereYear('transaction_date', $request->year); 
-            if ($filterPeriode === 'Semua Periode') {
+            if ($filterPeriode === __('pdf_filter_all_period')) {
                 $filterPeriode = $request->year;
             } else {
                 $filterPeriode .= ' ' . $request->year;
@@ -246,7 +246,7 @@ class ReceivableController extends Controller
         $dateReport = Carbon::now()->format('d F Y (H:i)');
 
         $pdf = Pdf::loadView('receivables.pdf', compact('receivables', 'dateReport', 'filterStatus', 'filterPeriode'))->setPaper('a4', 'portrait');
-        return $pdf->download('Laporan_Piutang_Piusmart_' . Carbon::now()->format('Ymd_His') . '.pdf');
+        return $pdf->download(__('pdf_filename_prefix') . Carbon::now()->format('Ymd_His') . '.pdf');
     }
 
     /**

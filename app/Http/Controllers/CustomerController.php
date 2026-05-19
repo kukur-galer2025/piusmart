@@ -140,7 +140,7 @@ class CustomerController extends Controller
 
         $pdf = Pdf::loadView('customers.pdf', compact('customers', 'dateReport'))->setPaper('a4', 'portrait');
         
-        return $pdf->download('Data_Pelanggan_Piusmart_' . Carbon::now()->format('Ymd_His') . '.pdf');
+        return $pdf->download(__('pdf_customer_filename_prefix') . Carbon::now()->format('Ymd_His') . '.pdf');
     }
 
     /**

@@ -11,37 +11,49 @@
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <style>
         [x-cloak] { display: none !important; }
+        .theme-transition, .theme-transition * {
+            transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease, opacity 0.4s ease;
+        }
     </style>
 </head>
 <body class="min-h-screen bg-white dark:bg-slate-900 font-sans text-slate-900 dark:text-slate-100 selection:bg-emerald-100 dark:selection:bg-emerald-900/50 selection:text-emerald-900 dark:selection:text-emerald-100 flex">
 
-    <div class="hidden lg:flex lg:w-1/2 relative overflow-hidden bg-slate-950 items-center justify-center">
+    <div class="hidden lg:flex lg:w-1/2 relative overflow-hidden bg-gradient-to-br from-emerald-50 via-white to-teal-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 items-center justify-center theme-transition">
         
-        <div class="absolute top-0 left-0 w-full h-full overflow-hidden opacity-60 pointer-events-none">
+        {{-- Light mode blobs --}}
+        <div class="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none opacity-70 dark:opacity-0 theme-transition">
+            <div class="absolute -top-[20%] -left-[10%] w-[70%] h-[70%] rounded-full bg-emerald-200/60 blur-[80px]"></div>
+            <div class="absolute bottom-[-20%] -right-[10%] w-[60%] h-[60%] rounded-full bg-teal-200/50 blur-[80px]"></div>
+        </div>
+        {{-- Dark mode blobs --}}
+        <div class="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none opacity-0 dark:opacity-60 theme-transition">
             <div class="absolute -top-[20%] -left-[10%] w-[70%] h-[70%] rounded-full bg-emerald-500/30 blur-[80px]"></div>
             <div class="absolute bottom-[-20%] -right-[10%] w-[60%] h-[60%] rounded-full bg-teal-500/30 blur-[80px]"></div>
         </div>
 
-        <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCI+PHBhdGggZD0iTTAgMGg0MHY0MEgwek0wIDBoMXY0MEgwek0wIDBoNDB2MUgweiIgZmlsbD0iI2ZmZiIgZmlsbC1vcGFjaXR5PSIwLjAzIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiLz48L3N2Zz4=')] pointer-events-none"></div>
+        {{-- Grid pattern - light uses dark lines, dark uses white lines --}}
+        <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCI+PHBhdGggZD0iTTAgMGg0MHY0MEgwek0wIDBoMXY0MEgwek0wIDBoNDB2MUgweiIgZmlsbD0iIzAwMCIgZmlsbC1vcGFjaXR5PSIwLjAzIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiLz48L3N2Zz4=')] dark:bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCI+PHBhdGggZD0iTTAgMGg0MHY0MEgwek0wIDBoMXY0MEgwek0wIDBoNDB2MUgweiIgZmlsbD0iI2ZmZiIgZmlsbC1vcGFjaXR5PSIwLjAzIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiLz48L3N2Zz4=')] pointer-events-none"></div>
 
-        <div class="relative z-10 w-full max-w-lg px-12 text-white">
-            <img src="{{ asset('images/logo.png') }}" alt="Piusmart Logo" class="h-12 w-auto object-contain mb-8 filter brightness-0 invert drop-shadow-md">
+        <div class="relative z-10 w-full max-w-lg px-12 text-slate-900 dark:text-white theme-transition">
+            {{-- Logo: normal in light, inverted in dark --}}
+            <img src="{{ asset('images/logo.png') }}" alt="Piusmart Logo" class="h-12 w-auto object-contain mb-8 drop-shadow-md dark:filter dark:brightness-0 dark:invert block dark:hidden">
+            <img src="{{ asset('images/logo.png') }}" alt="Piusmart Logo" class="h-12 w-auto object-contain mb-8 filter brightness-0 invert drop-shadow-md hidden dark:block">
             
-            <h2 class="text-4xl font-extrabold tracking-tight mb-5 leading-tight">
+            <h2 class="text-4xl font-extrabold tracking-tight mb-5 leading-tight text-slate-900 dark:text-white theme-transition">
                 {!! __('hero_title') !!}
             </h2>
-            <p class="text-slate-400 text-lg leading-relaxed">
+            <p class="text-slate-500 dark:text-slate-400 text-lg leading-relaxed theme-transition">
                 {!! __('hero_desc') !!}
             </p>
 
-            <div class="mt-12 p-6 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md">
+            <div class="mt-12 p-6 rounded-2xl bg-emerald-500/5 dark:bg-white/5 border border-emerald-500/15 dark:border-white/10 backdrop-blur-md theme-transition">
                 <div class="flex items-center gap-4">
-                    <div class="w-12 h-12 rounded-full bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center shrink-0">
-                        <svg class="w-6 h-6 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    <div class="w-12 h-12 rounded-full bg-emerald-500/10 dark:bg-emerald-500/20 border border-emerald-500/20 dark:border-emerald-500/30 flex items-center justify-center shrink-0 theme-transition">
+                        <svg class="w-6 h-6 text-emerald-600 dark:text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                     </div>
                     <div>
-                        <p class="text-white font-bold">{{ __('encrypted_system') }}</p>
-                        <p class="text-slate-400 text-sm mt-0.5">{{ __('exclusive_access') }}</p>
+                        <p class="text-slate-900 dark:text-white font-bold theme-transition">{{ __('encrypted_system') }}</p>
+                        <p class="text-slate-500 dark:text-slate-400 text-sm mt-0.5 theme-transition">{{ __('exclusive_access') }}</p>
                     </div>
                 </div>
             </div>
@@ -106,7 +118,7 @@
                     </div>
                 </div>
 
-                <div class="space-y-2">
+                <div class="space-y-2" x-data="{ showPassword: false }">
                     <label for="password" class="block text-sm font-bold text-slate-700 dark:text-slate-300 ml-1">{{ __('password') }}</label>
                     <div class="relative group">
                         <div class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none group-focus-within:text-emerald-500 dark:group-focus-within:text-emerald-400 text-slate-400 dark:text-slate-500">
@@ -114,8 +126,18 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
                             </svg>
                         </div>
-                        <input type="password" name="password" id="password" required placeholder="••••••••"
-                               class="w-full pl-12 pr-5 py-4 text-[15px] font-black tracking-widest text-slate-900 dark:text-white bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl focus:outline-none focus:border-emerald-500 dark:focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 dark:focus:ring-emerald-500/20 transition-shadow duration-200 placeholder-slate-400 dark:placeholder-slate-500 shadow-sm hover:border-slate-300 dark:hover:border-slate-600 [color-scheme:light] dark:[color-scheme:dark]">
+                        <input :type="showPassword ? 'text' : 'password'" name="password" id="password" required placeholder="••••••••"
+                               class="w-full pl-12 pr-12 py-4 text-[15px] font-black tracking-widest text-slate-900 dark:text-white bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl focus:outline-none focus:border-emerald-500 dark:focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 dark:focus:ring-emerald-500/20 transition-shadow duration-200 placeholder-slate-400 dark:placeholder-slate-500 shadow-sm hover:border-slate-300 dark:hover:border-slate-600 [color-scheme:light] dark:[color-scheme:dark]">
+                        
+                        <button type="button" @click="showPassword = !showPassword" class="absolute inset-y-0 right-0 flex items-center pr-4 text-slate-400 hover:text-emerald-500 dark:text-slate-500 dark:hover:text-emerald-400 focus:outline-none cursor-pointer">
+                            <svg x-show="!showPassword" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                            </svg>
+                            <svg x-show="showPassword" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5" x-cloak>
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.242 4.242L9.88 9.88" />
+                            </svg>
+                        </button>
                     </div>
                 </div>
 

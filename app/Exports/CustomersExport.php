@@ -26,11 +26,11 @@ class CustomersExport implements FromCollection, WithHeadings, WithMapping, With
     public function headings(): array
     {
         return [
-            'ID Pelanggan',
-            'Nama Lengkap',
-            'No. HP / WhatsApp',
-            'Alamat Lengkap',
-            'Terdaftar Sejak'
+            __('excel_customer_id'),
+            __('excel_customer_full_name'),
+            __('excel_customer_phone'),
+            __('excel_customer_address'),
+            __('excel_customer_registered'),
         ];
     }
 

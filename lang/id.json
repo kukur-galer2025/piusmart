@@ -180,5 +180,25 @@
     "pdf_registered_date": "Tgl Terdaftar",
     "pdf_no_customer_data": "Tidak ada data pelanggan ditemukan.",
     "pdf_signature_acknowledge": "Mengetahui,",
-    "pdf_customer_filename_prefix": "Data_Pelanggan_Piusmart_"
+    "pdf_customer_filename_prefix": "Data_Pelanggan_Piusmart_",
+
+    "excel_receivable_customer_name": "Nama Pelanggan",
+    "excel_receivable_phone": "No. HP / WA",
+    "excel_receivable_amount": "Jumlah Transaksi (Rp)",
+    "excel_receivable_transaction_date": "Tanggal Transaksi",
+    "excel_receivable_due_date": "Tanggal Jatuh Tempo",
+    "excel_receivable_status": "Status Pembayaran",
+    "excel_status_paid": "Lunas",
+    "excel_status_overdue": "Terlambat",
+    "excel_status_due_soon": "Akan Jatuh Tempo",
+    "excel_status_unpaid": "Belum Lunas",
+    "excel_total_label": "TOTAL AKUMULASI PIUTANG",
+    "excel_receivable_filename_prefix": "Laporan_Piutang_Piusmart_",
+
+    "excel_customer_id": "ID Pelanggan",
+    "excel_customer_full_name": "Nama Lengkap",
+    "excel_customer_phone": "No. HP / WhatsApp",
+    "excel_customer_address": "Alamat Lengkap",
+    "excel_customer_registered": "Terdaftar Sejak",
+    "excel_customer_filename_prefix": "Data_Pelanggan_Piusmart_"
 }

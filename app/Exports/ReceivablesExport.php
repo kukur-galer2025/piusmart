@@ -15,11 +15,21 @@ use Carbon\Carbon;
 class ReceivablesExport implements FromCollection, WithHeadings, WithMapping, WithStyles, ShouldAutoSize, WithEvents
 {
     protected $receivables;
+    protected $statusPaid;
+    protected $statusOverdue;
+    protected $statusDueSoon;
+    protected $statusUnpaid;
 
     // Menerima data terfilter dari Controller
     public function __construct($receivables)
     {
         $this->receivables = $receivables;
+
+        // Cache translated status labels at construction time
+        $this->statusPaid = __('excel_status_paid');
+        $this->statusOverdue = __('excel_status_overdue');
+        $this->statusDueSoon = __('excel_status_due_soon');
+        $this->statusUnpaid = __('excel_status_unpaid');
     }
 
     /**
@@ -36,12 +46,12 @@ class ReceivablesExport implements FromCollection, WithHeadings, WithMapping, Wi
     public function headings(): array
     {
         return [
-            'Nama Pelanggan',
-            'No. HP / WA',
-            'Jumlah Transaksi (Rp)',
-            'Tanggal Transaksi',
-            'Tanggal Jatuh Tempo',
-            'Status Pembayaran'
+            __('excel_receivable_customer_name'),
+            __('excel_receivable_phone'),
+            __('excel_receivable_amount'),
+            __('excel_receivable_transaction_date'),
+            __('excel_receivable_due_date'),
+            __('excel_receivable_status'),
         ];
     }
 
@@ -52,11 +62,11 @@ class ReceivablesExport implements FromCollection, WithHeadings, WithMapping, Wi
     {
         $today = Carbon::today();
         $dueDate = Carbon::parse($item->due_date)->startOfDay();
-        $statusText = 'Belum Lunas';
+        $statusText = $this->statusUnpaid;
         
-        if ($item->is_paid) { $statusText = 'Lunas'; }
-        elseif ($today->gt($dueDate)) { $statusText = 'Terlambat'; }
-        elseif ($today->diffInDays($dueDate, false) <= 3) { $statusText = 'Akan Jatuh Tempo'; }
+        if ($item->is_paid) { $statusText = $this->statusPaid; }
+        elseif ($today->gt($dueDate)) { $statusText = $this->statusOverdue; }
+        elseif ($today->diffInDays($dueDate, false) <= 3) { $statusText = $this->statusDueSoon; }
 
         return [
             $item->customer->name,
@@ -80,7 +90,7 @@ class ReceivablesExport implements FromCollection, WithHeadings, WithMapping, Wi
                 $totalRow = $highestRow + 1; // Baris baru tepat di bawah data terakhir
 
                 // Menulis teks label dan rumus matematika SUM asli Excel di kolom C
-                $sheet->setCellValue('B' . $totalRow, 'TOTAL AKUMULASI PIUTANG');
+                $sheet->setCellValue('B' . $totalRow, __('excel_total_label'));
                 $sheet->setCellValue('C' . $totalRow, '=SUM(C2:C' . $highestRow . ')');
 
                 // Mengatur gaya visual mewah baris akumulasi total (Format Double Border Akuntansi)
@@ -160,9 +170,9 @@ class ReceivablesExport implements FromCollection, WithHeadings, WithMapping, Wi
             $statusCell = $sheet->getCell('F' . $row)->getValue();
             $statusColor = '334155';
             
-            if ($statusCell === 'Lunas') { $statusColor = '047857'; }
-            elseif ($statusCell === 'Terlambat') { $statusColor = 'B91C1C'; }
-            elseif ($statusCell === 'Akan Jatuh Tempo') { $statusColor = 'B45309'; }
+            if ($statusCell === $this->statusPaid) { $statusColor = '047857'; }
+            elseif ($statusCell === $this->statusOverdue) { $statusColor = 'B91C1C'; }
+            elseif ($statusCell === $this->statusDueSoon) { $statusColor = 'B45309'; }
 
             $sheet->getStyle('F' . $row)->getFont()->applyFromArray([
                 'bold' => true,

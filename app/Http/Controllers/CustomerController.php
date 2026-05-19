@@ -156,7 +156,7 @@ class CustomerController extends Controller
         }
 
         $customers = $query->latest()->get();
-        $fileName = 'Data_Pelanggan_Piusmart_' . Carbon::now()->format('Ymd_His') . '.xlsx';
+        $fileName = __('excel_customer_filename_prefix') . Carbon::now()->format('Ymd_His') . '.xlsx';
 
         return Excel::download(new CustomersExport($customers), $fileName);
     }

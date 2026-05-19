@@ -275,7 +275,7 @@ class ReceivableController extends Controller
         if ($request->filled('year')) { $query->whereYear('transaction_date', $request->year); }
 
         $receivables = $query->latest()->get();
-        $fileName = 'Laporan_Piutang_Piusmart_' . Carbon::now()->format('Ymd_His') . '.xlsx';
+        $fileName = __('excel_receivable_filename_prefix') . Carbon::now()->format('Ymd_His') . '.xlsx';
 
         return Excel::download(new \App\Exports\ReceivablesExport($receivables), $fileName);
     }

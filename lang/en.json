@@ -180,5 +180,25 @@
     "pdf_registered_date": "Registered Date",
     "pdf_no_customer_data": "No customer data found.",
     "pdf_signature_acknowledge": "Acknowledged,",
-    "pdf_customer_filename_prefix": "Customer_Data_Piusmart_"
+    "pdf_customer_filename_prefix": "Customer_Data_Piusmart_",
+
+    "excel_receivable_customer_name": "Customer Name",
+    "excel_receivable_phone": "Phone / WA",
+    "excel_receivable_amount": "Transaction Amount (Rp)",
+    "excel_receivable_transaction_date": "Transaction Date",
+    "excel_receivable_due_date": "Due Date",
+    "excel_receivable_status": "Payment Status",
+    "excel_status_paid": "Paid",
+    "excel_status_overdue": "Overdue",
+    "excel_status_due_soon": "Due Soon",
+    "excel_status_unpaid": "Unpaid",
+    "excel_total_label": "TOTAL ACCUMULATED RECEIVABLES",
+    "excel_receivable_filename_prefix": "Receivable_Report_Piusmart_",
+
+    "excel_customer_id": "Customer ID",
+    "excel_customer_full_name": "Full Name",
+    "excel_customer_phone": "Phone / WhatsApp",
+    "excel_customer_address": "Full Address",
+    "excel_customer_registered": "Registered Since",
+    "excel_customer_filename_prefix": "Customer_Data_Piusmart_"
 }

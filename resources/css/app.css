@@ -12,3 +12,31 @@
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
 }
+
+/* ============================================================
+   FIX: iOS Safari date input overflow
+   iOS Safari renders a native date-picker button inside <input type="date">
+   that gives it an intrinsic min-width larger than narrow containers
+   (e.g. iPhone SE/Mini at 375px). These rules reset the appearance,
+   enforce max-width, and clip any internal overflow.
+   ============================================================ */
+input[type="date"] {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    max-width: 100%;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Shrink the native calendar-picker indicator on WebKit (iOS/Safari) */
+input[type="date"]::-webkit-date-and-time-value {
+    text-align: left;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+    margin-left: 4px;
+    padding: 0;
+    opacity: 0.6;
+}

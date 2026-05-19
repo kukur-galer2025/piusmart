@@ -4,20 +4,14 @@
 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 
 <style>
-    .dark .apexcharts-text { fill: #cbd5e1 !important; }
-    .dark .apexcharts-text.apexcharts-title-text { fill: #f1f5f9 !important; }
-    .dark .apexcharts-legend-text { color: #cbd5e1 !important; }
-    .dark .apexcharts-tooltip { background: #1e293b !important; border-color: #334155 !important; color: #f8fafc !important; }
+    .dark .apexcharts-text { fill: #94a3b8 !important; }
+    .dark .apexcharts-legend-text { color: #94a3b8 !important; }
+    .dark .apexcharts-tooltip { background: #1e293b !important; border-color: #334155 !important; color: #f8fafc !important; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.5); }
     .dark .apexcharts-tooltip-title { background: #0f172a !important; border-bottom-color: #334155 !important; font-weight: bold; }
     .dark .apexcharts-gridline { stroke: #334155 !important; }
     .dark .apexcharts-menu { background: #1e293b !important; border-color: #334155 !important; color: #e2e8f0 !important; }
     .dark .apexcharts-theme-light .apexcharts-menu-item:hover { background: #334155 !important; }
-    .dark .apexcharts-datalabel-label { fill: #e2e8f0 !important; }
-    .dark .apexcharts-datalabel-value { fill: #f8fafc !important; }
-    .dark .apexcharts-pie-label { fill: #ffffff !important; filter: drop-shadow(0 1px 2px rgba(0,0,0,0.5)); }
     .chart-card { width: 100%; overflow: hidden !important; }
-    .apexcharts-menu-icon { transform: scale(1.15); }
-    .apexcharts-menu-icon svg { fill: #94a3b8 !important; }
 </style>
 
 <div class="max-w-7xl mx-auto space-y-5 sm:space-y-6">
@@ -67,7 +61,6 @@
         </form>
     </div>
 
-    {{-- Filter Badge --}}
     @if($filterYear || $filterMonth)
     <div class="inline-flex items-center px-3 py-1.5 rounded-lg bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 text-xs font-semibold border border-indigo-100 dark:border-indigo-800/50">
         📊 {{ __('stat_period') }}:
@@ -85,140 +78,198 @@
             ['stat_total_overdue', $overdueAmount, $overdueCount, 'rose', 'M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z'],
         ]; @endphp
         @foreach($cards as [$label, $amount, $count, $color, $icon])
-        <div class="bg-white dark:bg-slate-800 p-4 sm:p-5 rounded-2xl border border-gray-100 dark:border-slate-700 shadow-sm relative overflow-hidden group hover:shadow-md transition-shadow duration-300">
-            <div class="absolute right-0 top-0 w-16 h-16 bg-{{ $color }}-50 dark:bg-{{ $color }}-900/20 rounded-bl-full -mr-3 -mt-3 transition-transform group-hover:scale-110"></div>
-            <div class="p-2 bg-{{ $color }}-100 dark:bg-{{ $color }}-900/40 text-{{ $color }}-600 dark:text-{{ $color }}-400 rounded-lg w-fit mb-2.5">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 sm:w-5 sm:h-5"><path stroke-linecap="round" stroke-linejoin="round" d="{{ $icon }}" /></svg>
+        <div class="bg-white dark:bg-slate-800 p-3 sm:p-5 rounded-xl sm:rounded-2xl border border-gray-100 dark:border-slate-700 shadow-sm relative overflow-hidden group hover:shadow-md transition-shadow duration-300">
+            <div class="absolute right-0 top-0 w-10 h-10 sm:w-14 sm:h-14 bg-{{ $color }}-50 dark:bg-{{ $color }}-900/20 rounded-bl-full -mr-2 -mt-2 transition-transform group-hover:scale-110"></div>
+            <div class="p-1.5 sm:p-2 bg-{{ $color }}-100 dark:bg-{{ $color }}-900/40 text-{{ $color }}-600 dark:text-{{ $color }}-400 rounded-md sm:rounded-lg w-fit mb-1.5 sm:mb-2.5">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-3.5 h-3.5 sm:w-5 sm:h-5"><path stroke-linecap="round" stroke-linejoin="round" d="{{ $icon }}" /></svg>
             </div>
-            <p class="text-[10px] sm:text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider">{{ __($label) }}</p>
-            <p class="text-base sm:text-xl font-black text-gray-900 dark:text-white mt-1.5 truncate">Rp {{ number_format($amount, 0, ',', '.') }}</p>
-            <p class="text-[10px] sm:text-xs font-semibold text-{{ $color }}-600 dark:text-{{ $color }}-400 mt-1.5">{{ $count }} {{ __('stat_transactions') }}</p>
+            <p class="text-[9px] sm:text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider leading-tight">{{ __($label) }}</p>
+            <p class="text-sm sm:text-xl font-black text-gray-900 dark:text-white mt-1 sm:mt-1.5 truncate">Rp {{ number_format($amount, 0, ',', '.') }}</p>
+            <p class="text-[9px] sm:text-xs font-semibold text-{{ $color }}-600 dark:text-{{ $color }}-400 mt-1 sm:mt-1.5">{{ $count }} {{ __('stat_transactions') }}</p>
         </div>
         @endforeach
     </div>
 
-    {{-- Charts --}}
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 sm:gap-6">
-        <div class="bg-white dark:bg-slate-800 shadow-sm rounded-2xl border border-gray-100 dark:border-slate-700 p-4 sm:p-5 chart-card">
-            <div id="chart-trend"></div>
+    {{-- Charts: JUDUL PAKAI HTML, BUKAN ApexCharts title --}}
+    <div class="space-y-5 sm:space-y-6">
+
+        {{-- Row 1: Tren + Pelunasan --}}
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 sm:gap-6">
+            <div class="bg-white dark:bg-slate-800 shadow-sm rounded-2xl border border-gray-100 dark:border-slate-700 p-4 sm:p-6 chart-card">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-sm sm:text-base font-bold text-gray-800 dark:text-white">📈 {{ __('stat_chart_trend') }}</h3>
+                    <button onclick="downloadChart('trend', '{{ __('stat_chart_trend') }}')" class="p-1.5 rounded-lg text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-gray-100 dark:hover:bg-slate-700 transition-colors cursor-pointer" title="Download PNG">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" /></svg>
+                    </button>
+                </div>
+                <div id="chart-trend" class="w-full"></div>
+            </div>
+            <div class="bg-white dark:bg-slate-800 shadow-sm rounded-2xl border border-gray-100 dark:border-slate-700 p-4 sm:p-6 chart-card">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-sm sm:text-base font-bold text-gray-800 dark:text-white">💰 {{ __('stat_chart_monthly_paid') }}</h3>
+                    <button onclick="downloadChart('monthly-paid', '{{ __('stat_chart_monthly_paid') }}')" class="p-1.5 rounded-lg text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-gray-100 dark:hover:bg-slate-700 transition-colors cursor-pointer" title="Download PNG">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" /></svg>
+                    </button>
+                </div>
+                <div id="chart-monthly-paid" class="w-full"></div>
+            </div>
         </div>
-        <div class="bg-white dark:bg-slate-800 shadow-sm rounded-2xl border border-gray-100 dark:border-slate-700 p-4 sm:p-5 chart-card">
-            <div id="chart-monthly-paid"></div>
+
+        {{-- Row 2: Top 5 --}}
+        <div class="bg-white dark:bg-slate-800 shadow-sm rounded-2xl border border-gray-100 dark:border-slate-700 p-4 sm:p-6 chart-card">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-sm sm:text-base font-bold text-gray-800 dark:text-white">🏆 {{ __('stat_chart_top') }}</h3>
+                <button onclick="downloadChart('top', '{{ __('stat_chart_top') }}')" class="p-1.5 rounded-lg text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-gray-100 dark:hover:bg-slate-700 transition-colors cursor-pointer" title="Download PNG">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" /></svg>
+                </button>
+            </div>
+            <div id="chart-top" class="w-full"></div>
         </div>
-        <div class="bg-white dark:bg-slate-800 shadow-sm rounded-2xl border border-gray-100 dark:border-slate-700 p-4 sm:p-5 chart-card lg:col-span-2">
-            <div id="chart-top"></div>
+
+        {{-- Row 3: Donut + Pie --}}
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 sm:gap-6">
+            <div class="bg-white dark:bg-slate-800 shadow-sm rounded-2xl border border-gray-100 dark:border-slate-700 p-4 sm:p-6 chart-card">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-sm sm:text-base font-bold text-gray-800 dark:text-white">🍩 {{ __('stat_chart_status') }}</h3>
+                    <button onclick="downloadChart('status', '{{ __('stat_chart_status') }}')" class="p-1.5 rounded-lg text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-gray-100 dark:hover:bg-slate-700 transition-colors cursor-pointer" title="Download PNG">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" /></svg>
+                    </button>
+                </div>
+                <div id="chart-status" class="w-full flex justify-center"></div>
+            </div>
+            <div class="bg-white dark:bg-slate-800 shadow-sm rounded-2xl border border-gray-100 dark:border-slate-700 p-4 sm:p-6 chart-card">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-sm sm:text-base font-bold text-gray-800 dark:text-white">🥧 {{ __('stat_chart_paid_vs_unpaid') }}</h3>
+                    <button onclick="downloadChart('pie', '{{ __('stat_chart_paid_vs_unpaid') }}')" class="p-1.5 rounded-lg text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-gray-100 dark:hover:bg-slate-700 transition-colors cursor-pointer" title="Download PNG">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" /></svg>
+                    </button>
+                </div>
+                <div id="chart-pie" class="w-full flex justify-center"></div>
+            </div>
         </div>
-        <div class="bg-white dark:bg-slate-800 shadow-sm rounded-2xl border border-gray-100 dark:border-slate-700 p-4 sm:p-5 chart-card">
-            <div id="chart-status"></div>
-        </div>
-        <div class="bg-white dark:bg-slate-800 shadow-sm rounded-2xl border border-gray-100 dark:border-slate-700 p-4 sm:p-5 chart-card">
-            <div id="chart-pie"></div>
-        </div>
+
     </div>
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function () {
+    // Simpan instance chart secara global untuk fungsi download
+    var chartInstances = {};
 
-    // Helper: Format Rupiah
-    function fmtRp(v) { return 'Rp ' + v.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'); }
-    function fmtJt(v) { return 'Rp ' + (v/1000000).toFixed(1) + ' Jt'; }
-
-    // Shared toolbar config for HD export with title
-    function toolbar(title) {
-        return {
-            show: true,
-            tools: { download: true, selection: false, zoom: false, zoomin: false, zoomout: false, pan: false, reset: false },
-            export: {
-                csv: {
-                    filename: title,
-                    headerCategory: 'Kategori',
-                    headerValue: 'Nilai'
-                },
-                svg: { filename: title },
-                png: { filename: title }
-            }
-        };
+    function downloadChart(id, title) {
+        var chart = chartInstances[id];
+        if (!chart) return;
+        chart.dataURI({ scale: 2 }).then(function(res) {
+            var link = document.createElement('a');
+            link.href = res.imgURI;
+            link.download = title + '.png';
+            link.click();
+        });
     }
 
-    // Shared responsive
-    var mobileResp = [{ breakpoint: 640, options: { chart: { height: 260 }, title: { style: { fontSize: '13px' } } } }];
+    document.addEventListener('DOMContentLoaded', function () {
 
-    // ===================== CHART 1: Tren Piutang =====================
-    new ApexCharts(document.querySelector('#chart-trend'), {
-        series: [
-            { name: '{{ __("stat_total_receivable") }}', data: {!! json_encode($trendNewAmounts) !!} },
-            { name: '{{ __("stat_total_paid") }}', data: {!! json_encode($trendPaidAmounts) !!} }
-        ],
-        chart: { type: 'area', height: 340, fontFamily: 'inherit', background: 'transparent', toolbar: toolbar('{{ __("stat_chart_trend") }}') },
-        title: { text: '{{ __("stat_chart_trend") }}', align: 'left', style: { fontSize: '15px', fontWeight: 700 } },
-        colors: ['#6366f1', '#10b981'],
-        fill: { type: 'gradient', gradient: { shadeIntensity: 1, opacityFrom: 0.35, opacityTo: 0.05 } },
-        stroke: { curve: 'smooth', width: 3 },
-        dataLabels: { enabled: false },
-        xaxis: { categories: {!! json_encode($trendMonths) !!}, labels: { style: { fontSize: '10px' }, hideOverlappingLabels: true, rotate: -45, rotateAlways: false } },
-        yaxis: { labels: { formatter: fmtJt, style: { fontSize: '11px' } } },
-        tooltip: { y: { formatter: fmtRp } },
-        legend: { position: 'top', horizontalAlign: 'right', fontSize: '12px' },
-        responsive: mobileResp
-    }).render();
+        function fmtRp(v) { return 'Rp ' + v.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'); }
+        function fmtJt(v) { return 'Rp ' + (v / 1000000).toFixed(1) + ' Jt'; }
 
-    // ===================== CHART 2: Realisasi Pelunasan =====================
-    new ApexCharts(document.querySelector('#chart-monthly-paid'), {
-        series: [{ name: '{{ __("stat_total_paid") }}', data: {!! json_encode($paidMonthlyAmounts) !!} }],
-        chart: { type: 'bar', height: 340, fontFamily: 'inherit', background: 'transparent', toolbar: toolbar('{{ __("stat_chart_monthly_paid") }}') },
-        title: { text: '{{ __("stat_chart_monthly_paid") }}', align: 'left', style: { fontSize: '15px', fontWeight: 700 } },
-        colors: ['#10b981'],
-        plotOptions: { bar: { borderRadius: 5, columnWidth: '55%' } },
-        dataLabels: { enabled: false },
-        xaxis: { categories: {!! json_encode($paidMonths) !!}, labels: { style: { fontSize: '10px' }, hideOverlappingLabels: true, rotate: -45, rotateAlways: false } },
-        yaxis: { labels: { formatter: fmtJt, style: { fontSize: '11px' } } },
-        tooltip: { y: { formatter: fmtRp } },
-        responsive: mobileResp
-    }).render();
+        // CHART 1: Tren Piutang (Area)
+        chartInstances['trend'] = new ApexCharts(document.querySelector("#chart-trend"), {
+            series: [
+                { name: '{{ __("stat_total_receivable") }}', data: {!! json_encode($trendNewAmounts) !!} },
+                { name: '{{ __("stat_total_paid") }}', data: {!! json_encode($trendPaidAmounts) !!} }
+            ],
+            chart: { type: 'area', height: 320, width: '100%', fontFamily: 'inherit', toolbar: { show: false }, background: 'transparent' },
+            colors: ['#818cf8', '#34d399'],
+            fill: { type: 'gradient', gradient: { shadeIntensity: 1, opacityFrom: 0.4, opacityTo: 0.05, stops: [0, 100] } },
+            stroke: { curve: 'smooth', width: 3 },
+            dataLabels: { enabled: false },
+            xaxis: {
+                categories: {!! json_encode($trendMonths) !!},
+                tooltip: { enabled: false },
+                labels: { style: { fontSize: '11px' }, hideOverlappingLabels: true }
+            },
+            yaxis: { labels: { formatter: fmtJt, style: { fontSize: '11px' } } },
+            tooltip: { y: { formatter: fmtRp } },
+            legend: { position: 'top', horizontalAlign: 'right', fontSize: '12px' },
+            responsive: [{ breakpoint: 480, options: { chart: { height: 280 } } }]
+        });
+        chartInstances['trend'].render();
 
-    // ===================== CHART 3: Top 5 Pelanggan =====================
-    new ApexCharts(document.querySelector('#chart-top'), {
-        series: [{ name: '{{ __("stat_total_unpaid") }}', data: {!! json_encode($topTotals) !!} }],
-        chart: { type: 'bar', height: 340, fontFamily: 'inherit', background: 'transparent', toolbar: toolbar('{{ __("stat_chart_top") }}') },
-        title: { text: '{{ __("stat_chart_top") }}', align: 'left', style: { fontSize: '15px', fontWeight: 700 } },
-        colors: ['#f59e0b'],
-        plotOptions: { bar: { borderRadius: 5, horizontal: true, barHeight: '60%' } },
-        dataLabels: { enabled: true, formatter: fmtRp, style: { fontSize: '11px' }, offsetX: 5 },
-        xaxis: { categories: {!! json_encode($topNames) !!}, labels: { formatter: fmtJt, style: { fontSize: '10px' } } },
-        yaxis: { labels: { maxWidth: 140, style: { fontSize: '12px', fontWeight: 600 } } },
-        tooltip: { y: { formatter: fmtRp } },
-        responsive: [{ breakpoint: 640, options: { chart: { height: 280 }, yaxis: { labels: { maxWidth: 100, style: { fontSize: '10px' } } }, dataLabels: { enabled: false }, title: { style: { fontSize: '13px' } } } }]
-    }).render();
+        // CHART 2: Realisasi Pelunasan (Bar)
+        chartInstances['monthly-paid'] = new ApexCharts(document.querySelector("#chart-monthly-paid"), {
+            series: [{ name: '{{ __("stat_total_paid") }}', data: {!! json_encode($paidMonthlyAmounts) !!} }],
+            chart: { type: 'bar', height: 320, width: '100%', fontFamily: 'inherit', toolbar: { show: false }, background: 'transparent' },
+            colors: ['#34d399'],
+            plotOptions: { bar: { borderRadius: 5, columnWidth: '55%' } },
+            dataLabels: { enabled: false },
+            xaxis: {
+                categories: {!! json_encode($paidMonths) !!},
+                labels: { style: { fontSize: '11px' }, hideOverlappingLabels: true }
+            },
+            yaxis: { labels: { formatter: fmtJt, style: { fontSize: '11px' } } },
+            tooltip: { y: { formatter: fmtRp } },
+            responsive: [{ breakpoint: 480, options: { chart: { height: 280 } } }]
+        });
+        chartInstances['monthly-paid'].render();
 
-    // ===================== CHART 4: Komposisi Status (Donut) =====================
-    new ApexCharts(document.querySelector('#chart-status'), {
-        series: [{{ $statusPaid }}, {{ $statusUnpaid }}, {{ $statusDueSoon }}, {{ $statusOverdue }}],
-        chart: { type: 'donut', height: 340, fontFamily: 'inherit', background: 'transparent', toolbar: toolbar('{{ __("stat_chart_status") }}') },
-        title: { text: '{{ __("stat_chart_status") }}', align: 'left', style: { fontSize: '15px', fontWeight: 700 } },
-        labels: ['{{ __("paid") }}', '{{ __("unpaid") }}', '{{ __("due_soon") }}', '{{ __("overdue") }}'],
-        colors: ['#10b981', '#38bdf8', '#f59e0b', '#f43f5e'],
-        plotOptions: { pie: { donut: { size: '68%', labels: { show: true, total: { show: true, label: 'Total', fontSize: '13px', fontWeight: 700, formatter: function(w) { return w.globals.seriesTotals.reduce((a,b) => a+b, 0) + ' data'; } } } } } },
-        dataLabels: { enabled: true, formatter: function(val) { return val.toFixed(1) + '%'; }, style: { fontSize: '11px', fontWeight: 600 } },
-        stroke: { width: 3, colors: ['transparent'] },
-        legend: { position: 'bottom', fontSize: '12px', markers: { radius: 12 }, itemMargin: { horizontal: 8, vertical: 4 } },
-        tooltip: { y: { formatter: function(v) { return v + ' {{ __("stat_transactions") }}'; } } },
-        responsive: [{ breakpoint: 640, options: { chart: { height: 300 }, legend: { fontSize: '11px' }, title: { style: { fontSize: '13px' } } } }]
-    }).render();
+        // CHART 3: Top 5 Pelanggan (Horizontal Bar)
+        chartInstances['top'] = new ApexCharts(document.querySelector("#chart-top"), {
+            series: [{ name: '{{ __("stat_total_unpaid") }}', data: {!! json_encode($topTotals) !!} }],
+            chart: { type: 'bar', height: 320, width: '100%', fontFamily: 'inherit', toolbar: { show: false }, background: 'transparent' },
+            colors: ['#fbbf24'],
+            plotOptions: { bar: { borderRadius: 4, horizontal: true } },
+            dataLabels: { enabled: false },
+            xaxis: {
+                categories: {!! json_encode($topNames) !!},
+                labels: { formatter: fmtJt, hideOverlappingLabels: true, style: { fontSize: '11px' } }
+            },
+            yaxis: { labels: { show: true, maxWidth: 120, style: { fontSize: '11px' } } },
+            tooltip: { y: { formatter: fmtRp } },
+            responsive: [{
+                breakpoint: 480,
+                options: {
+                    chart: { height: 300 },
+                    yaxis: { labels: { maxWidth: 90, style: { fontSize: '10px' } } },
+                    xaxis: { labels: { style: { fontSize: '9px' } } }
+                }
+            }]
+        });
+        chartInstances['top'].render();
 
-    // ===================== CHART 5: Lunas vs Belum Lunas (Pie) =====================
-    new ApexCharts(document.querySelector('#chart-pie'), {
-        series: [{{ $paidAmount }}, {{ $unpaidAmount }}],
-        chart: { type: 'pie', height: 340, fontFamily: 'inherit', background: 'transparent', toolbar: toolbar('{{ __("stat_chart_paid_vs_unpaid") }}') },
-        title: { text: '{{ __("stat_chart_paid_vs_unpaid") }}', align: 'left', style: { fontSize: '15px', fontWeight: 700 } },
-        labels: ['{{ __("paid") }}', '{{ __("unpaid") }}'],
-        colors: ['#10b981', '#f43f5e'],
-        dataLabels: { enabled: true, style: { fontSize: '13px', fontWeight: 'bold' }, dropShadow: { enabled: true, top: 1, left: 1, blur: 2, opacity: 0.3 } },
-        stroke: { width: 3, colors: ['transparent'] },
-        legend: { position: 'bottom', fontSize: '12px', markers: { radius: 12 }, itemMargin: { horizontal: 8, vertical: 4 } },
-        tooltip: { y: { formatter: fmtRp } },
-        responsive: [{ breakpoint: 640, options: { chart: { height: 300 }, legend: { fontSize: '11px' }, title: { style: { fontSize: '13px' } } } }]
-    }).render();
-});
+        // CHART 4: Komposisi Status (Donut)
+        chartInstances['status'] = new ApexCharts(document.querySelector("#chart-status"), {
+            series: [{{ $statusPaid }}, {{ $statusUnpaid }}, {{ $statusDueSoon }}, {{ $statusOverdue }}],
+            chart: { type: 'donut', height: 320, width: '100%', fontFamily: 'inherit', background: 'transparent' },
+            labels: ['{{ __("paid") }}', '{{ __("unpaid") }}', '{{ __("due_soon") }}', '{{ __("overdue") }}'],
+            colors: ['#34d399', '#60a5fa', '#fbbf24', '#fb7185'],
+            plotOptions: { pie: { donut: { size: '75%' } } },
+            dataLabels: { enabled: false },
+            stroke: { width: 4, colors: ['transparent'] },
+            legend: { position: 'bottom', markers: { radius: 12 }, itemMargin: { horizontal: 10, vertical: 5 } },
+            tooltip: { y: { formatter: function(v) { return v + ' {{ __("stat_transactions") }}'; } } },
+            responsive: [{
+                breakpoint: 480,
+                options: { chart: { height: 280 }, legend: { position: 'bottom', fontSize: '11px', itemMargin: { horizontal: 5, vertical: 2 } } }
+            }]
+        });
+        chartInstances['status'].render();
+
+        // CHART 5: Lunas vs Belum Lunas (Pie)
+        chartInstances['pie'] = new ApexCharts(document.querySelector("#chart-pie"), {
+            series: [{{ $paidAmount }}, {{ $unpaidAmount }}],
+            chart: { type: 'pie', height: 320, width: '100%', fontFamily: 'inherit', background: 'transparent' },
+            labels: ['{{ __("paid") }}', '{{ __("unpaid") }}'],
+            colors: ['#34d399', '#fb7185'],
+            dataLabels: { enabled: true, style: { fontSize: '12px', fontWeight: 'bold' }, dropShadow: { enabled: true } },
+            stroke: { width: 4, colors: ['transparent'] },
+            legend: { position: 'bottom', markers: { radius: 12 }, itemMargin: { horizontal: 10, vertical: 5 } },
+            tooltip: { y: { formatter: fmtRp } },
+            responsive: [{
+                breakpoint: 480,
+                options: { chart: { height: 280 }, legend: { position: 'bottom', fontSize: '11px' }, dataLabels: { style: { fontSize: '11px' } } }
+            }]
+        });
+        chartInstances['pie'].render();
+
+    });
 </script>
 @endsection

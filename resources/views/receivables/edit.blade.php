@@ -40,6 +40,7 @@
                         <span class="text-sm font-semibold text-gray-500 dark:text-slate-400 ml-1">Rp</span>
                     </div>
                     <input type="number" name="amount" id="amount" value="{{ old('amount', $receivable->amount) }}" required min="1"
+                           style="box-sizing: border-box;"
                            class="w-full min-w-0 pl-14 pr-3 py-2.5 text-sm font-medium text-gray-900 dark:text-white bg-gray-50 dark:bg-slate-900 border @error('amount') border-rose-500 dark:border-rose-500 @else border-gray-200 dark:border-slate-600 @enderror rounded-xl focus:outline-none focus:ring-2 @error('amount') focus:ring-rose-500 @else focus:ring-emerald-500 @enderror focus:bg-white dark:focus:bg-slate-800">
                 </div>
                 <p class="text-[11px] text-gray-400 dark:text-slate-500 mt-1 font-medium pl-1">💡 {{ __('amount_helper') }}</p>
@@ -51,47 +52,39 @@
                 @enderror
             </div>
 
-            {{-- Dates --}}
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                <div class="min-w-0">
-                    <label for="transaction_date" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">{{ __('transaction_date') }}</label>
-                    <div class="relative min-w-0">
-                        <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-gray-400 dark:text-slate-500 shrink-0">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
-                            </svg>
-                        </div>
-                        <input type="date" name="transaction_date" id="transaction_date" value="{{ old('transaction_date', $receivable->transaction_date->format('Y-m-d')) }}" required
-                               class="w-full min-w-0 pl-10 pr-2 py-2.5 text-sm text-gray-900 dark:text-white bg-gray-50 dark:bg-slate-900 border @error('transaction_date') border-rose-500 dark:border-rose-500 @else border-gray-200 dark:border-slate-600 @enderror rounded-xl focus:outline-none focus:ring-2 @error('transaction_date') focus:ring-rose-500 @else focus:ring-emerald-500 @enderror focus:bg-white dark:focus:bg-slate-800 [color-scheme:light] dark:[color-scheme:dark]">
-                    </div>
-                    <p class="text-[11px] text-gray-400 dark:text-slate-500 mt-1 font-medium pl-1">💡 {{ __('transaction_date_helper') }}</p>
-                    @error('transaction_date') 
-                        <p class="text-xs text-rose-600 dark:text-rose-400 mt-1.5 flex items-center gap-1 font-medium pl-1">
-                            <svg class="w-3.5 h-3.5 shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" /></svg>
-                            {{ $message }}
-                        </p> 
-                    @enderror
-                </div>
+            {{-- 
+                FIX iOS SAFARI: Date input type="date" punya intrinsic min-width besar di iOS.
+                Grid 2 kolom di iPhone ~375px hanya beri ~161px per kolom → overflow.
+                Solusi: stack 1 kolom penuh + hapus icon absolut + tambah style box-sizing.
+            --}}
+            <div>
+                <label for="transaction_date" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">{{ __('transaction_date') }}</label>
+                <input type="date" name="transaction_date" id="transaction_date"
+                       value="{{ old('transaction_date', $receivable->transaction_date->format('Y-m-d')) }}" required
+                       style="box-sizing: border-box;"
+                       class="w-full min-w-0 px-4 py-2.5 text-sm text-gray-900 dark:text-white bg-gray-50 dark:bg-slate-900 border @error('transaction_date') border-rose-500 dark:border-rose-500 @else border-gray-200 dark:border-slate-600 @enderror rounded-xl focus:outline-none focus:ring-2 @error('transaction_date') focus:ring-rose-500 @else focus:ring-emerald-500 @enderror focus:bg-white dark:focus:bg-slate-800 [color-scheme:light] dark:[color-scheme:dark]">
+                <p class="text-[11px] text-gray-400 dark:text-slate-500 mt-1 font-medium pl-1">💡 {{ __('transaction_date_helper') }}</p>
+                @error('transaction_date') 
+                    <p class="text-xs text-rose-600 dark:text-rose-400 mt-1.5 flex items-center gap-1 font-medium pl-1">
+                        <svg class="w-3.5 h-3.5 shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" /></svg>
+                        {{ $message }}
+                    </p> 
+                @enderror
+            </div>
 
-                <div class="min-w-0">
-                    <label for="due_date" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">{{ __('due_date') }}</label>
-                    <div class="relative min-w-0">
-                        <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-gray-400 dark:text-slate-500 shrink-0">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                            </svg>
-                        </div>
-                        <input type="date" name="due_date" id="due_date" value="{{ old('due_date', $receivable->due_date->format('Y-m-d')) }}" required
-                               class="w-full min-w-0 pl-10 pr-2 py-2.5 text-sm text-gray-900 dark:text-white bg-gray-50 dark:bg-slate-900 border @error('due_date') border-rose-500 dark:border-rose-500 @else border-gray-200 dark:border-slate-600 @enderror rounded-xl focus:outline-none focus:ring-2 @error('due_date') focus:ring-rose-500 @else focus:ring-emerald-500 @enderror focus:bg-white dark:focus:bg-slate-800 [color-scheme:light] dark:[color-scheme:dark]">
-                    </div>
-                    <p class="text-[11px] text-gray-400 dark:text-slate-500 mt-1 font-medium pl-1">💡 {{ __('due_date_helper') }}</p>
-                    @error('due_date') 
-                        <p class="text-xs text-rose-600 dark:text-rose-400 mt-1.5 flex items-center gap-1 font-medium pl-1">
-                            <svg class="w-3.5 h-3.5 shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" /></svg>
-                            {{ $message }}
-                        </p> 
-                    @enderror
-                </div>
+            <div>
+                <label for="due_date" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">{{ __('due_date') }}</label>
+                <input type="date" name="due_date" id="due_date"
+                       value="{{ old('due_date', $receivable->due_date->format('Y-m-d')) }}" required
+                       style="box-sizing: border-box;"
+                       class="w-full min-w-0 px-4 py-2.5 text-sm text-gray-900 dark:text-white bg-gray-50 dark:bg-slate-900 border @error('due_date') border-rose-500 dark:border-rose-500 @else border-gray-200 dark:border-slate-600 @enderror rounded-xl focus:outline-none focus:ring-2 @error('due_date') focus:ring-rose-500 @else focus:ring-emerald-500 @enderror focus:bg-white dark:focus:bg-slate-800 [color-scheme:light] dark:[color-scheme:dark]">
+                <p class="text-[11px] text-gray-400 dark:text-slate-500 mt-1 font-medium pl-1">💡 {{ __('due_date_helper') }}</p>
+                @error('due_date') 
+                    <p class="text-xs text-rose-600 dark:text-rose-400 mt-1.5 flex items-center gap-1 font-medium pl-1">
+                        <svg class="w-3.5 h-3.5 shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" /></svg>
+                        {{ $message }}
+                    </p> 
+                @enderror
             </div>
 
             {{-- Notes --}}
@@ -104,6 +97,7 @@
                         </svg>
                     </div>
                     <textarea name="notes" id="notes" rows="3" placeholder="{{ __('notes_placeholder') }}"
+                              style="box-sizing: border-box;"
                               class="w-full min-w-0 pl-10 pr-3 py-2.5 text-sm text-gray-900 dark:text-white bg-gray-50 dark:bg-slate-900 border @error('notes') border-rose-500 dark:border-rose-500 @else border-gray-200 dark:border-slate-600 @enderror rounded-xl focus:outline-none focus:ring-2 @error('notes') focus:ring-rose-500 @else focus:ring-emerald-500 @enderror focus:bg-white dark:focus:bg-slate-800 resize-none">{{ old('notes', $receivable->notes) }}</textarea>
                 </div>
                 @error('notes') 

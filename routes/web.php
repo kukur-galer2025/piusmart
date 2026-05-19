@@ -25,6 +25,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
     // 2. Piutang
+    Route::get('/receivables/statistics', [ReceivableController::class, 'statistics'])->name('receivables.statistics');
     Route::get('/receivables/export/pdf', [ReceivableController::class, 'exportPdf'])->name('receivables.export.pdf');
     Route::get('/receivables/export/excel', [ReceivableController::class, 'exportExcel'])->name('receivables.export.excel');
     

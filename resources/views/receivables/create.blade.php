@@ -22,24 +22,21 @@
         <form action="{{ route('receivables.store') }}" method="POST" class="space-y-5">
             @csrf
 
+            {{-- Customer --}}
             <div>
                 <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">{{ __('customer_name') }}</label>
-                
                 <input type="hidden" name="customer_id" :value="selectedCustomerId" required>
-
-                <div class="relative">
+                <div class="relative min-w-0">
                     <button type="button" @click="openCustomerModal = true; searchCustomer = ''"
-                            class="w-full flex items-center justify-between pl-11 pr-4 py-2.5 text-sm bg-gray-50 dark:bg-slate-900 border @error('customer_id') border-rose-500 dark:border-rose-500 @else border-gray-200 dark:border-slate-600 @enderror rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white dark:focus:bg-slate-800 text-left cursor-pointer">
-                        
+                            class="w-full flex items-center justify-between pl-11 pr-3 py-2.5 text-sm bg-gray-50 dark:bg-slate-900 border @error('customer_id') border-rose-500 dark:border-rose-500 @else border-gray-200 dark:border-slate-600 @enderror rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white dark:focus:bg-slate-800 text-left cursor-pointer min-w-0">
                         <span x-text="selectedCustomerId ? selectedCustomerName + ' (📞 ' + selectedCustomerPhone + ')' : '{{ __('choose_customer') }}'"
-                              :class="selectedCustomerId ? 'text-gray-900 dark:text-white font-medium' : 'text-gray-400 dark:text-gray-500'">
+                              :class="selectedCustomerId ? 'text-gray-900 dark:text-white font-medium' : 'text-gray-400 dark:text-gray-500'"
+                              class="truncate min-w-0 flex-1">
                         </span>
-
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 text-gray-500 dark:text-gray-400 shrink-0 ml-2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
                         </svg>
                     </button>
-
                     <div class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-gray-400 dark:text-slate-500">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
@@ -55,17 +52,18 @@
                 @enderror
             </div>
 
+            {{-- Amount --}}
             <div>
                 <label for="amount" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">{{ __('amount') }}</label>
-                <div class="relative">
-                    <div class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-gray-400 dark:text-slate-500">
+                <div class="relative min-w-0">
+                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 text-gray-400 dark:text-slate-500 shrink-0">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0 1 15.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 0 1 3 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 0 0-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 0 1-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 0 0 3 15h-.75M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm3 0h.008v.008H18V10.5Zm-12 0h.008v.008H6V10.5Z" />
                         </svg>
-                        <span class="text-sm font-semibold text-gray-500 dark:text-slate-400 ml-1.5">Rp</span>
+                        <span class="text-sm font-semibold text-gray-500 dark:text-slate-400 ml-1">Rp</span>
                     </div>
                     <input type="number" name="amount" id="amount" value="{{ old('amount') }}" required min="1" placeholder="0"
-                           class="w-full pl-[4.5rem] pr-4 py-2.5 text-sm font-medium text-gray-900 dark:text-white bg-gray-50 dark:bg-slate-900 border @error('amount') border-rose-500 dark:border-rose-500 @else border-gray-200 dark:border-slate-600 @enderror rounded-xl focus:outline-none focus:ring-2 @error('amount') focus:ring-rose-500 @else focus:ring-emerald-500 @enderror focus:bg-white dark:focus:bg-slate-800">
+                           class="w-full pl-14 pr-3 py-2.5 text-sm font-medium text-gray-900 dark:text-white bg-gray-50 dark:bg-slate-900 border @error('amount') border-rose-500 dark:border-rose-500 @else border-gray-200 dark:border-slate-600 @enderror rounded-xl focus:outline-none focus:ring-2 @error('amount') focus:ring-rose-500 @else focus:ring-emerald-500 @enderror focus:bg-white dark:focus:bg-slate-800 min-w-0">
                 </div>
                 <p class="text-[11px] text-gray-400 dark:text-slate-500 mt-1 font-medium pl-1">💡 {{ __('amount_helper') }}</p>
                 @error('amount')
@@ -76,17 +74,18 @@
                 @enderror
             </div>
 
+            {{-- Dates --}}
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                <div>
+                <div class="min-w-0">
                     <label for="transaction_date" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">{{ __('transaction_date') }}</label>
-                    <div class="relative">
-                        <div class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-gray-400 dark:text-slate-500">
+                    <div class="relative min-w-0">
+                        <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-gray-400 dark:text-slate-500 shrink-0">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
                             </svg>
                         </div>
                         <input type="date" name="transaction_date" id="transaction_date" value="{{ old('transaction_date', date('Y-m-d')) }}" required
-                               class="w-full pl-11 pr-4 py-2.5 text-sm text-gray-900 dark:text-white bg-gray-50 dark:bg-slate-900 border @error('transaction_date') border-rose-500 dark:border-rose-500 @else border-gray-200 dark:border-slate-600 @enderror rounded-xl focus:outline-none focus:ring-2 @error('transaction_date') focus:ring-rose-500 @else focus:ring-emerald-500 @enderror focus:bg-white dark:focus:bg-slate-800 [color-scheme:light] dark:[color-scheme:dark]">
+                               class="w-full min-w-0 pl-10 pr-2 py-2.5 text-sm text-gray-900 dark:text-white bg-gray-50 dark:bg-slate-900 border @error('transaction_date') border-rose-500 dark:border-rose-500 @else border-gray-200 dark:border-slate-600 @enderror rounded-xl focus:outline-none focus:ring-2 @error('transaction_date') focus:ring-rose-500 @else focus:ring-emerald-500 @enderror focus:bg-white dark:focus:bg-slate-800 [color-scheme:light] dark:[color-scheme:dark]">
                     </div>
                     <p class="text-[11px] text-gray-400 dark:text-slate-500 mt-1 font-medium pl-1">💡 {{ __('transaction_date_helper') }}</p>
                     @error('transaction_date')
@@ -97,16 +96,16 @@
                     @enderror
                 </div>
 
-                <div>
+                <div class="min-w-0">
                     <label for="due_date" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">{{ __('due_date') }}</label>
-                    <div class="relative">
-                        <div class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-gray-400 dark:text-slate-500">
+                    <div class="relative min-w-0">
+                        <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-gray-400 dark:text-slate-500 shrink-0">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                             </svg>
                         </div>
                         <input type="date" name="due_date" id="due_date" value="{{ old('due_date') }}" required
-                               class="w-full pl-11 pr-4 py-2.5 text-sm text-gray-900 dark:text-white bg-gray-50 dark:bg-slate-900 border @error('due_date') border-rose-500 dark:border-rose-500 @else border-gray-200 dark:border-slate-600 @enderror rounded-xl focus:outline-none focus:ring-2 @error('due_date') focus:ring-rose-500 @else focus:ring-emerald-500 @enderror focus:bg-white dark:focus:bg-slate-800 [color-scheme:light] dark:[color-scheme:dark]">
+                               class="w-full min-w-0 pl-10 pr-2 py-2.5 text-sm text-gray-900 dark:text-white bg-gray-50 dark:bg-slate-900 border @error('due_date') border-rose-500 dark:border-rose-500 @else border-gray-200 dark:border-slate-600 @enderror rounded-xl focus:outline-none focus:ring-2 @error('due_date') focus:ring-rose-500 @else focus:ring-emerald-500 @enderror focus:bg-white dark:focus:bg-slate-800 [color-scheme:light] dark:[color-scheme:dark]">
                     </div>
                     <p class="text-[11px] text-gray-400 dark:text-slate-500 mt-1 font-medium pl-1">💡 {{ __('due_date_helper') }}</p>
                     @error('due_date')
@@ -118,16 +117,17 @@
                 </div>
             </div>
 
+            {{-- Notes --}}
             <div>
                 <label for="notes" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">{{ __('notes') }} {{ __('optional') }}</label>
-                <div class="relative">
-                    <div class="absolute top-3 left-4 pointer-events-none">
+                <div class="relative min-w-0">
+                    <div class="absolute top-3 left-3 pointer-events-none">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-gray-400 dark:text-slate-500">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m6.75 12H9m1.5-12H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
                         </svg>
                     </div>
                     <textarea name="notes" id="notes" rows="3" placeholder="{{ __('notes_placeholder') }}"
-                              class="w-full pl-11 pr-4 py-2.5 text-sm text-gray-900 dark:text-white bg-gray-50 dark:bg-slate-900 border @error('notes') border-rose-500 dark:border-rose-500 @else border-gray-200 dark:border-slate-600 @enderror rounded-xl focus:outline-none focus:ring-2 @error('notes') focus:ring-rose-500 @else focus:ring-emerald-500 @enderror focus:bg-white dark:focus:bg-slate-800">{{ old('notes') }}</textarea>
+                              class="w-full min-w-0 pl-10 pr-3 py-2.5 text-sm text-gray-900 dark:text-white bg-gray-50 dark:bg-slate-900 border @error('notes') border-rose-500 dark:border-rose-500 @else border-gray-200 dark:border-slate-600 @enderror rounded-xl focus:outline-none focus:ring-2 @error('notes') focus:ring-rose-500 @else focus:ring-emerald-500 @enderror focus:bg-white dark:focus:bg-slate-800 resize-none">{{ old('notes') }}</textarea>
                 </div>
                 @error('notes')
                     <p class="text-xs text-rose-600 dark:text-rose-400 mt-1.5 flex items-center gap-1 font-medium pl-1">
@@ -148,6 +148,7 @@
         </form>
     </div>
 
+    {{-- Customer Modal --}}
     <div x-show="openCustomerModal" 
          class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm"
          x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
@@ -165,10 +166,10 @@
                 </button>
             </div>
 
-            <div class="mt-4 relative">
+            <div class="mt-4 relative min-w-0">
                 <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400 dark:text-gray-500 text-sm">🔍</span>
                 <input type="text" x-model="searchCustomer" placeholder="{{ __('type_customer_name') }}"
-                       class="w-full pl-9 pr-4 py-2 text-sm bg-gray-50 dark:bg-slate-900 border border-gray-300 dark:border-slate-600 text-gray-900 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white dark:focus:bg-slate-800">
+                       class="w-full min-w-0 pl-9 pr-3 py-2 text-sm bg-gray-50 dark:bg-slate-900 border border-gray-300 dark:border-slate-600 text-gray-900 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white dark:focus:bg-slate-800">
             </div>
 
             <div class="mt-4 flex-1 overflow-y-auto divide-y divide-gray-50 dark:divide-slate-700/50 max-h-64 pr-1">

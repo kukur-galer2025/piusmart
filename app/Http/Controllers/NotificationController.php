@@ -27,6 +27,8 @@ class NotificationController extends Controller
     {
         $notification = Auth::user()->notifications()->findOrFail($id);
         $notification->markAsRead();
-        return redirect()->back();
+        
+        // PERBAIKAN: Lempar flash message success agar modal muncul
+        return redirect()->back()->with('success', __('notif_marked_read_single'));
     }
 }

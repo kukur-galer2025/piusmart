@@ -14,6 +14,11 @@
         .theme-transition, .theme-transition * {
             transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease, opacity 0.4s ease;
         }
+        /* Hide native Edge/Chromium password reveal button */
+        input::-ms-reveal,
+        input::-ms-clear {
+            display: none !important;
+        }
     </style>
 </head>
 <body class="min-h-screen bg-white dark:bg-slate-900 font-sans text-slate-900 dark:text-slate-100 selection:bg-emerald-100 dark:selection:bg-emerald-900/50 selection:text-emerald-900 dark:selection:text-emerald-100 flex">

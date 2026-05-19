@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Receivable;
 use Carbon\Carbon;
-use Illuminate\Http\Request;
 use Illuminate\Contracts\View\View;
+use Illuminate\Support\Facades\Auth; // Ditambahkan untuk membaca data notifikasi user
 
 class DashboardController extends Controller
 {
@@ -14,60 +14,70 @@ class DashboardController extends Controller
         $today = Carbon::today();
         $threeDaysFromNow = Carbon::today()->addDays(3);
 
-        // 1. Metrik: Piutang Aktif (Belum Lunas)
+        // --- 0. DATA NOTIFIKASI PENGINGAT OTOMATIS (URGENT ALERTS BANNER) ---
+        // Mengambil 5 notifikasi belum dibaca teratas milik Admin untuk dipajang di Dashboard
+        $urgentAlerts = Auth::check() ? Auth::user()->unreadNotifications->take(5) : collect();
+
+
+        // --- 1. METRIK KOTAK ATAS & GRAFIK 1 (KOMPOSISI AKTIF) ---
         $activeReceivables = Receivable::where('is_paid', false)->get();
         $activeCount = $activeReceivables->count();
         $activeAmount = $activeReceivables->sum('amount');
 
-        // 2. Metrik: Akan Jatuh Tempo (H-3 sampai Hari H)
         $dueSoonReceivables = Receivable::where('is_paid', false)
             ->whereBetween('due_date', [$today, $threeDaysFromNow])
             ->get();
         $dueSoonCount = $dueSoonReceivables->count();
         $dueSoonAmount = $dueSoonReceivables->sum('amount');
 
-        // 3. Metrik: Terlambat (Melewati Hari H)
         $overdueReceivables = Receivable::where('is_paid', false)
             ->where('due_date', '<', $today)
             ->get();
         $overdueCount = $overdueReceivables->count();
         $overdueAmount = $overdueReceivables->sum('amount');
 
-        // 4. Bangun Sistem Notifikasi untuk Dashboard
-        $notifications = collect();
 
-        // Gabungkan data terlambat dan akan jatuh tempo
-        $urgentReceivables = Receivable::with('customer')
-            ->where('is_paid', false)
-            ->where('due_date', '<=', $threeDaysFromNow)
-            ->orderBy('due_date', 'asc')
-            ->take(6) // 🟢 BATASI HANYA 6 DATA AGAR DASHBOARD TIDAK KEPANJANGAN
-            ->get();
+        // --- 2. DATA GRAFIK: LUNAS VS BELUM LUNAS ---
+        $paidAmount = Receivable::where('is_paid', true)->sum('amount');
+        $unpaidAmount = $activeAmount; // Sama dengan total yang belum dibayar
 
-        foreach ($urgentReceivables as $receivable) {
-            $dueDate = Carbon::parse($receivable->due_date)->startOfDay();
+
+        // --- 3. DATA GRAFIK: TREN 6 BULAN TERAKHIR ---
+        $trendMonths = [];
+        $trendTotals = [];
+        for ($i = 5; $i >= 0; $i--) {
+            $monthStart = Carbon::today()->subMonths($i)->startOfMonth();
+            $monthEnd = Carbon::today()->subMonths($i)->endOfMonth();
             
-            // MENGGUNAKAN abs() AGAR TIDAK ADA ANGKA MINUS (-18 HARI)
-            $days = abs($today->diffInDays($dueDate, false)); 
-
-            if ($today->gt($dueDate)) {
-                $notifications->push([
-                    'type'    => 'overdue',
-                    'message' => __('warning_overdue', ['name' => $receivable->customer->name, 'days' => $days]),
-                ]);
-            } else {
-                $notifications->push([
-                    'type'    => 'due_soon',
-                    'message' => __('warning_due_soon', ['name' => $receivable->customer->name, 'days' => $days]),
-                ]);
-            }
+            $trendMonths[] = $monthStart->translatedFormat('M Y'); // Contoh: "Mei 2026"
+            $trendTotals[] = Receivable::whereBetween('transaction_date', [$monthStart, $monthEnd])->sum('amount');
         }
 
+
+        // --- 4. DATA GRAFIK: TOP 5 PELANGGAN DENGAN PIUTANG TERBESAR ---
+        // Menggunakan Collection Laravel agar aman di semua jenis Database
+        $unpaidWithCustomers = Receivable::with('customer')->where('is_paid', false)->get();
+        
+        $topCustomersData = $unpaidWithCustomers->groupBy('customer_id')->map(function ($rows) {
+            return [
+                'name' => $rows->first()->customer->name ?? 'Pelanggan Dihapus',
+                'total' => $rows->sum('amount')
+            ];
+        })->sortByDesc('total')->take(5);
+
+        // Ubah menjadi array untuk JavaScript grafik
+        $topCustomerNames = $topCustomersData->pluck('name')->values()->toArray();
+        $topCustomerTotals = $topCustomersData->pluck('total')->values()->toArray();
+
+
         return view('dashboard', compact(
+            'urgentAlerts', // Disuntikkan ke dalam view dashboard
             'activeCount', 'activeAmount',
             'dueSoonCount', 'dueSoonAmount',
             'overdueCount', 'overdueAmount',
-            'notifications'
+            'paidAmount', 'unpaidAmount',
+            'trendMonths', 'trendTotals',
+            'topCustomerNames', 'topCustomerTotals'
         ));
     }
 }

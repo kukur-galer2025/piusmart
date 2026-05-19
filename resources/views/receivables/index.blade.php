@@ -1,58 +1,91 @@
 @extends('layouts.app')
 
 @section('content')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<style>
+    /* Pasukan anti-scrollbar & Pelicin Scrolling untuk HP */
+    .no-scrollbar::-webkit-scrollbar { 
+        display: none !important; 
+        width: 0 !important; 
+        height: 0 !important; 
+        -webkit-appearance: none !important; 
+    }
+    .no-scrollbar { 
+        -ms-overflow-style: none !important; 
+        scrollbar-width: none !important; 
+        -webkit-overflow-scrolling: touch !important; 
+    }
+</style>
+
 <div x-data="{ 
-        openModal: false, actionUrl: '', customerName: '', 
-        openDeleteModal: false, deleteUrl: '',
         search: '{{ request('search') }}',
         status: '{{ request('status') }}',
+        month: '{{ request('month') }}',
+        year: '{{ request('year') }}',
         isSearching: false,
         
         fetchData() {
             this.isSearching = true;
+            const url = `{{ route('receivables.index') }}?search=${this.search}&status=${this.status}&month=${this.month}&year=${this.year}`;
             
-            fetch(`{{ route('receivables.index') }}?search=${this.search}&status=${this.status}`, {
-                headers: { 'X-Requested-With': 'XMLHttpRequest' }
-            })
+            fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
             .then(response => response.text())
             .then(html => {
-                // Suntikkan data ke dalam wrapper
-                document.getElementById('table-wrapper').innerHTML = html;
-                this.isSearching = false;
-                
-                window.history.pushState({}, '', `?search=${this.search}&status=${this.status}`);
+                setTimeout(() => {
+                    document.getElementById('table-wrapper').innerHTML = html;
+                    window.history.pushState({}, '', url);
+                    this.isSearching = false;
+                }, 150); 
             });
         }
     }" 
     class="space-y-6">
     
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
         <div>
-            <h1 class="text-2xl font-bold tracking-tight text-gray-900">{{ __('receivables_data') }}</h1>
-            <p class="text-sm text-gray-500 mt-1">Kelola dan pantau seluruh transaksi piutang pelanggan.</p>
+            <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-gray-900 dark:text-white transition-colors duration-300">{{ __('receivables_data') }}</h1>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1 transition-colors duration-300">Kelola dan pantau seluruh transaksi piutang pelanggan.</p>
         </div>
-        <div>
-            <a href="{{ route('receivables.create') }}" class="w-full sm:w-auto inline-flex items-center justify-center px-4 py-2.5 text-sm font-semibold text-white bg-emerald-600 rounded-lg hover:bg-emerald-700 shadow-xs transition-colors cursor-pointer">
+        
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full lg:w-auto">
+            <a :href="'{{ route('receivables.export.pdf') }}?search=' + search + '&status=' + status + '&month=' + month + '&year=' + year" 
+               title="Unduh berkas PDF"
+               class="w-full sm:w-auto inline-flex items-center justify-center px-4 py-2.5 text-sm font-semibold text-gray-700 dark:text-gray-200 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-700 shadow-sm cursor-pointer">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" fill="currentColor" class="w-4 h-4 mr-2 text-rose-600 dark:text-rose-400">
+                    <path d="M128 64C92.7 64 64 92.7 64 128L64 512C64 547.3 92.7 576 128 576L208 576L208 464C208 428.7 236.7 400 272 400L448 400L448 234.5C448 217.5 441.3 201.2 429.3 189.2L322.7 82.7C310.7 70.7 294.5 64 277.5 64L128 64zM389.5 240L296 240C282.7 240 272 229.3 272 216L272 122.5L389.5 240zM272 444C261 444 252 453 252 464L252 592C252 603 261 612 272 612C283 612 292 603 292 592L292 564L304 564C337.1 564 364 537.1 364 504C364 470.9 337.1 444 304 444L272 444zM304 524L292 524L292 484L304 484C315 484 324 493 324 504C324 515 315 524 304 524zM400 444C389 444 380 453 380 464L380 592C380 603 389 612 400 612L432 612C460.7 612 484 588.7 484 560L484 496C484 467.3 460.7 444 432 444L400 444zM420 572L420 484L432 484C438.6 484 444 489.4 444 496L444 560C444 566.6 438.6 572 432 572L420 572zM508 464L508 592C508 603 517 612 528 612C539 612 548 603 548 592L548 548L576 548C587 548 596 539 596 528C596 517 587 508 576 508L548 508L548 484L576 484C587 484 596 475 596 464C596 453 587 444 576 444L528 444C517 444 508 453 508 464z"/>
+                </svg>
+                Cetak PDF
+            </a>
+
+            <a :href="'{{ route('receivables.export.excel') }}?search=' + search + '&status=' + status + '&month=' + month + '&year=' + year" 
+               title="Unduh berkas Excel"
+               class="w-full sm:w-auto inline-flex items-center justify-center px-4 py-2.5 text-sm font-semibold text-gray-700 dark:text-gray-200 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-700 shadow-sm cursor-pointer">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 mr-2 text-emerald-600 dark:text-emerald-400"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m6.75 12H9m1.5-12H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" /></svg>
+                Export Excel
+            </a>
+
+            <a href="{{ route('receivables.create') }}" 
+               class="w-full sm:w-auto inline-flex items-center justify-center px-4 py-2.5 text-sm font-semibold text-white bg-emerald-600 dark:bg-emerald-500 rounded-lg hover:bg-emerald-700 dark:hover:bg-emerald-600 shadow-sm cursor-pointer">
                 ➕ {{ __('add_receivable') }}
             </a>
         </div>
     </div>
 
-    <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-xs">
-        <div class="flex flex-col md:flex-row gap-3 relative">
-            <div class="relative flex-1">
-                <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">🔍</span>
+    <div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-gray-200 dark:border-slate-700 shadow-sm transition-colors duration-300">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 relative">
+            <div class="relative w-full">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400 dark:text-gray-500">🔍</span>
                 <input type="text" x-model="search" @input.debounce.500ms="fetchData()" placeholder="{{ __('search') }}"
-                       class="w-full pl-9 pr-10 py-2.5 text-sm bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-all">
-                
+                       class="w-full pl-9 pr-10 py-2.5 text-sm bg-gray-50 dark:bg-slate-900 border border-gray-300 dark:border-slate-600 text-gray-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white dark:focus:bg-slate-800">
                 <span x-show="isSearching" class="absolute inset-y-0 right-0 flex items-center pr-3" x-cloak>
-                    <svg class="animate-spin h-4 w-4 text-emerald-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                    <svg class="animate-spin h-4 w-4 text-emerald-500 dark:text-emerald-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
                 </span>
             </div>
 
-            <div class="w-full md:w-48">
+            <div class="w-full">
                 <select x-model="status" @change="fetchData()" 
-                        class="w-full px-3 py-2.5 text-sm bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-all">
+                        class="w-full px-3 py-2.5 text-sm bg-gray-50 dark:bg-slate-900 border border-gray-300 dark:border-slate-600 text-gray-700 dark:text-gray-200 font-medium rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white dark:focus:bg-slate-800">
                     <option value="">-- Semua Status --</option>
                     <option value="unpaid">{{ __('unpaid') }}</option>
                     <option value="due_soon">{{ __('due_soon') }}</option>
@@ -61,82 +94,127 @@
                 </select>
             </div>
 
-            <button x-show="search !== '' || status !== ''" 
-                    @click="search = ''; status = ''; fetchData()" 
-                    class="px-4 py-2.5 text-sm text-center font-medium text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors cursor-pointer" x-cloak>
-                Reset
-            </button>
+            <div class="w-full">
+                <select x-model="month" @change="fetchData()" 
+                        class="w-full px-3 py-2.5 text-sm bg-gray-50 dark:bg-slate-900 border border-gray-300 dark:border-slate-600 text-gray-700 dark:text-gray-200 font-medium rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white dark:focus:bg-slate-800">
+                    <option value="">-- Semua Bulan --</option>
+                    @foreach(range(1, 12) as $m)
+                        <option value="{{ sprintf('%02d', $m) }}">
+                            {{ \Carbon\Carbon::create()->month($m)->translatedFormat('F') }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+
+            <div class="w-full flex gap-2">
+                <select x-model="year" @change="fetchData()" 
+                        class="w-full flex-1 px-3 py-2.5 text-sm bg-gray-50 dark:bg-slate-900 border border-gray-300 dark:border-slate-600 text-gray-700 dark:text-gray-200 font-medium rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white dark:focus:bg-slate-800">
+                    <option value="">-- Semua Tahun --</option>
+                    @for($y = \Carbon\Carbon::now()->year + 1; $y >= 2024; $y--)
+                        <option value="{{ $y }}">{{ $y }}</option>
+                    @endfor
+                </select>
+
+                <button x-show="search !== '' || status !== '' || month !== '' || year !== ''" 
+                        @click="search = ''; status = ''; month = ''; year = ''; fetchData()" 
+                        class="px-3 py-2.5 text-sm font-semibold text-gray-600 dark:text-slate-300 bg-gray-100 dark:bg-slate-700 rounded-lg hover:bg-gray-200 dark:hover:bg-slate-600 cursor-pointer" x-cloak>
+                    ✕
+                </button>
+            </div>
         </div>
     </div>
 
-    @if(session('success'))
-        <div class="p-4 bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm rounded-xl flex items-center">
-            <span class="mr-2">✅</span> {{ session('success') }}
-        </div>
-    @endif
-
-    <div class="relative bg-white rounded-xl border border-gray-200 shadow-xs overflow-hidden">
+    <div class="relative bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700 shadow-sm overflow-hidden transition-colors duration-300">
         
         <div x-show="isSearching" 
-             x-transition:enter="transition ease-out duration-300"
-             x-transition:enter-start="opacity-0"
-             x-transition:enter-end="opacity-100"
-             x-transition:leave="transition ease-in duration-200"
-             x-transition:leave-start="opacity-100"
-             x-transition:leave-end="opacity-0"
-             class="absolute inset-0 z-10 bg-white/40 backdrop-blur-[2px] flex items-center justify-center pointer-events-none" x-cloak>
-            
-            <div class="bg-white px-5 py-2.5 rounded-full shadow-lg border border-emerald-100 flex items-center gap-3 transform -translate-y-4">
-                <svg class="animate-spin h-5 w-5 text-emerald-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-                <span class="text-sm font-bold text-emerald-700 tracking-wide animate-pulse">Memuat Data...</span>
+             x-transition.opacity.duration.200ms
+             class="absolute inset-0 z-10 bg-white/60 dark:bg-slate-900/60 flex items-center justify-center pointer-events-none" x-cloak>
+            <div class="bg-white dark:bg-slate-800 px-5 py-2.5 rounded-full shadow-md border border-emerald-100 dark:border-slate-600 flex items-center gap-3 transform -translate-y-4">
+                <svg class="animate-spin h-5 w-5 text-emerald-500 dark:text-emerald-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                <span class="text-sm font-bold text-emerald-700 dark:text-emerald-400 tracking-wide animate-pulse">Memuat Data...</span>
             </div>
         </div>
 
-        <div id="table-wrapper" class="transition-all duration-300 ease-in-out origin-top" :class="isSearching ? 'scale-[0.99] opacity-40 blur-[1px]' : 'scale-100 opacity-100 blur-0'">
+        <div id="table-wrapper" :class="isSearching ? 'opacity-40' : 'opacity-100'" class="transition-opacity duration-200">
             @include('receivables.partials.table')
         </div>
 
     </div>
-
-    <div x-show="openModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm overflow-y-auto" x-cloak>
-        <div @click.away="openModal = false" class="bg-white rounded-2xl shadow-xl max-w-sm w-full p-6 space-y-4">
-            <div class="text-center">
-                <span class="text-3xl">💰</span>
-                <h3 class="text-lg font-bold text-gray-900 mt-2">Konfirmasi Pembayaran</h3>
-                <p class="text-sm text-gray-500 mt-1">
-                    Tandai piutang <span class="font-bold text-gray-800" x-text="customerName"></span> sebagai <strong>LUNAS</strong>?
-                </p>
-            </div>
-            <div class="flex gap-3">
-                <button @click="openModal = false" class="flex-1 px-4 py-2.5 text-sm font-semibold text-gray-700 bg-gray-100 rounded-xl hover:bg-gray-200 transition-colors cursor-pointer">Batal</button>
-                <form :action="actionUrl" method="POST" class="flex-1">
-                    @csrf @method('PATCH')
-                    <button type="submit" class="w-full px-4 py-2.5 text-sm font-semibold text-white bg-emerald-600 rounded-xl hover:bg-emerald-700 shadow-sm transition-colors cursor-pointer">Ya, Lunas!</button>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <div x-show="openDeleteModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm overflow-y-auto" x-cloak>
-        <div @click.away="openDeleteModal = false" class="bg-white rounded-2xl shadow-xl max-w-sm w-full p-6 space-y-5">
-            <div class="text-center">
-                <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-rose-100 mb-4">
-                    <svg class="h-6 w-6 text-rose-600" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
-                </div>
-                <h3 class="text-lg font-bold text-gray-900">Hapus Data Piutang</h3>
-                <p class="text-sm text-gray-500 mt-2">
-                    Anda yakin ingin menghapus data piutang <span class="font-bold text-gray-800" x-text="customerName"></span>? Tindakan ini tidak dapat dibatalkan.
-                </p>
-            </div>
-            <div class="flex gap-3 mt-5">
-                <button @click="openDeleteModal = false" class="flex-1 px-4 py-2.5 text-sm font-semibold text-gray-700 bg-gray-100 rounded-xl hover:bg-gray-200 transition-colors cursor-pointer">Batal</button>
-                <form :action="deleteUrl" method="POST" class="flex-1">
-                    @csrf @method('DELETE')
-                    <button type="submit" class="w-full px-4 py-2.5 text-sm font-semibold text-white bg-rose-600 rounded-xl hover:bg-rose-700 shadow-sm transition-colors cursor-pointer">Ya, Hapus</button>
-                </form>
-            </div>
-        </div>
-    </div>
-
 </div>
+
+<script>
+    @if(session('success'))
+        Swal.fire({
+            icon: 'success',
+            title: 'Berhasil!',
+            text: '{{ session('success') }}',
+            showConfirmButton: false,
+            timer: 2500,
+            customClass: { popup: 'rounded-2xl dark:bg-slate-800 dark:text-white' }
+        });
+    @endif
+
+    function confirmPaid(id, customerName, amount) {
+        Swal.fire({
+            title: 'Konfirmasi Pelunasan',
+            html: `Tandai piutang <strong>${customerName}</strong> sebesar <span class="text-emerald-600 dark:text-emerald-400 font-extrabold">${amount}</span> sebagai <span class="text-emerald-600 dark:text-emerald-400 font-bold">LUNAS</span>?`,
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#059669',
+            cancelButtonColor: '#9ca3af',
+            confirmButtonText: 'Ya, Lunas!',
+            cancelButtonText: 'Batal',
+            reverseButtons: true,
+            customClass: {
+                popup: 'rounded-3xl dark:bg-slate-800 dark:text-white transition-colors duration-300',
+                confirmButton: 'rounded-xl px-5 py-2 font-bold shadow-md',
+                cancelButton: 'rounded-xl px-5 py-2 font-semibold'
+            }
+        }).then((result) => {
+            if (result.isConfirmed) { document.getElementById('form-paid-' + id).submit(); }
+        });
+    }
+
+    function confirmUnpaid(id, customerName, amount) {
+        Swal.fire({
+            title: 'Batalkan Pelunasan?',
+            html: `Status piutang <strong>${customerName}</strong> sebesar <span class="text-rose-600 dark:text-rose-400 font-extrabold">${amount}</span> akan dikembalikan menjadi <span class="text-rose-600 dark:text-rose-400 font-bold">BELUM LUNAS</span>.`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#e11d48',
+            cancelButtonColor: '#9ca3af',
+            confirmButtonText: 'Ya, Batalkan',
+            cancelButtonText: 'Tutup',
+            reverseButtons: true,
+            customClass: {
+                popup: 'rounded-3xl dark:bg-slate-800 dark:text-white transition-colors duration-300',
+                confirmButton: 'rounded-xl px-5 py-2 font-bold shadow-md',
+                cancelButton: 'rounded-xl px-5 py-2 font-semibold'
+            }
+        }).then((result) => {
+            if (result.isConfirmed) { document.getElementById('form-unpaid-' + id).submit(); }
+        });
+    }
+
+    function confirmDelete(id, customerName) {
+        Swal.fire({
+            title: 'Hapus Data Piutang',
+            html: `Anda yakin ingin menghapus data <strong>${customerName}</strong> secara permanen?<br><span class="text-sm text-rose-500 dark:text-rose-400 mt-1 block">Tindakan ini tidak dapat dibatalkan.</span>`,
+            icon: 'error',
+            showCancelButton: true,
+            confirmButtonColor: '#e11d48',
+            cancelButtonColor: '#9ca3af',
+            confirmButtonText: 'Ya, Hapus',
+            cancelButtonText: 'Batal',
+            reverseButtons: true,
+            customClass: {
+                popup: 'rounded-3xl dark:bg-slate-800 dark:text-white transition-colors duration-300',
+                confirmButton: 'rounded-xl px-5 py-2 font-bold shadow-md',
+                cancelButton: 'rounded-xl px-5 py-2 font-semibold'
+            }
+        }).then((result) => {
+            if (result.isConfirmed) { document.getElementById('form-delete-' + id).submit(); }
+        });
+    }
+</script>
 @endsection

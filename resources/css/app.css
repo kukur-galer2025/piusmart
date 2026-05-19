@@ -1,5 +1,8 @@
 @import 'tailwindcss';
 
+/* 🟢 Tambahkan ini untuk mengaktifkan Class-based Dark Mode di Tailwind v4 */
+@variant dark (.dark &);
+
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
 @source '../**/*.blade.php';

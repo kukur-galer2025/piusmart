@@ -171,12 +171,34 @@
         function fmtRp(v) { return 'Rp ' + v.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'); }
         function fmtJt(v) { return 'Rp ' + (v / 1000000).toFixed(1) + ' Jt'; }
 
+        function getChartTheme() {
+            return document.documentElement.classList.contains('dark') ? 'dark' : 'light';
+        }
+        
+        // Listen for dark mode changes to update charts
+        const observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                if (mutation.attributeName === "class") {
+                    const themeMode = getChartTheme();
+                    for (let key in chartInstances) {
+                        if (chartInstances[key]) {
+                            chartInstances[key].updateOptions({
+                                theme: { mode: themeMode }
+                            });
+                        }
+                    }
+                }
+            });
+        });
+        observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+
         // CHART 1: Tren Piutang (Area)
         chartInstances['trend'] = new ApexCharts(document.querySelector("#chart-trend"), {
             series: [
                 { name: '{{ __("stat_total_receivable") }}', data: {!! json_encode($trendNewAmounts) !!} },
                 { name: '{{ __("stat_total_paid") }}', data: {!! json_encode($trendPaidAmounts) !!} }
             ],
+            theme: { mode: getChartTheme() },
             chart: { type: 'area', height: 320, width: '100%', fontFamily: 'inherit', toolbar: { show: false }, background: 'transparent' },
             colors: ['#818cf8', '#34d399'],
             fill: { type: 'gradient', gradient: { shadeIntensity: 1, opacityFrom: 0.4, opacityTo: 0.05, stops: [0, 100] } },
@@ -197,6 +219,7 @@
         // CHART 2: Realisasi Pelunasan (Bar)
         chartInstances['monthly-paid'] = new ApexCharts(document.querySelector("#chart-monthly-paid"), {
             series: [{ name: '{{ __("stat_total_paid") }}', data: {!! json_encode($paidMonthlyAmounts) !!} }],
+            theme: { mode: getChartTheme() },
             chart: { type: 'bar', height: 320, width: '100%', fontFamily: 'inherit', toolbar: { show: false }, background: 'transparent' },
             colors: ['#34d399'],
             plotOptions: { bar: { borderRadius: 5, columnWidth: '55%' } },
@@ -214,6 +237,7 @@
         // CHART 3: Top 5 Pelanggan (Horizontal Bar)
         chartInstances['top'] = new ApexCharts(document.querySelector("#chart-top"), {
             series: [{ name: '{{ __("stat_total_unpaid") }}', data: {!! json_encode($topTotals) !!} }],
+            theme: { mode: getChartTheme() },
             chart: { type: 'bar', height: 320, width: '100%', fontFamily: 'inherit', toolbar: { show: false }, background: 'transparent' },
             colors: ['#fbbf24'],
             plotOptions: { bar: { borderRadius: 4, horizontal: true } },
@@ -238,6 +262,7 @@
         // CHART 4: Komposisi Status (Donut)
         chartInstances['status'] = new ApexCharts(document.querySelector("#chart-status"), {
             series: [{{ $statusPaid }}, {{ $statusUnpaid }}, {{ $statusDueSoon }}, {{ $statusOverdue }}],
+            theme: { mode: getChartTheme() },
             chart: { type: 'donut', height: 320, width: '100%', fontFamily: 'inherit', background: 'transparent' },
             labels: ['{{ __("paid") }}', '{{ __("unpaid") }}', '{{ __("due_soon") }}', '{{ __("overdue") }}'],
             colors: ['#34d399', '#60a5fa', '#fbbf24', '#fb7185'],
@@ -256,6 +281,7 @@
         // CHART 5: Lunas vs Belum Lunas (Pie)
         chartInstances['pie'] = new ApexCharts(document.querySelector("#chart-pie"), {
             series: [{{ $paidAmount }}, {{ $unpaidAmount }}],
+            theme: { mode: getChartTheme() },
             chart: { type: 'pie', height: 320, width: '100%', fontFamily: 'inherit', background: 'transparent' },
             labels: ['{{ __("paid") }}', '{{ __("unpaid") }}'],
             colors: ['#34d399', '#fb7185'],

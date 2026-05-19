@@ -4,12 +4,6 @@
 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 
 <style>
-    .dark .apexcharts-text { fill: #94a3b8 !important; }
-    .dark .apexcharts-legend-text { color: #94a3b8 !important; }
-    .dark .apexcharts-tooltip { background: #1e293b !important; border-color: #334155 !important; color: #f8fafc !important; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.5); }
-    .dark .apexcharts-tooltip-title { background: #0f172a !important; border-bottom-color: #334155 !important; font-weight: bold; }
-    .dark .apexcharts-gridline { stroke: #334155 !important; }
-    
     /* Mencegah tumpahan scrollbar pada wrapper grafik */
     .chart-wrapper { width: 100%; overflow: hidden !important; }
 </style>
@@ -152,12 +146,37 @@
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         
+        // Simpan referensi chart untuk diupdate temanya
+        var chartInstances = {};
+        
+        function getChartTheme() {
+            return document.documentElement.classList.contains('dark') ? 'dark' : 'light';
+        }
+        
+        // Listen for dark mode changes
+        const observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                if (mutation.attributeName === "class") {
+                    const themeMode = getChartTheme();
+                    for (let key in chartInstances) {
+                        if (chartInstances[key]) {
+                            chartInstances[key].updateOptions({
+                                theme: { mode: themeMode }
+                            });
+                        }
+                    }
+                }
+            });
+        });
+        observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+
         // --- GRAFIK 1: TREN PIUTANG (AREA) ---
         var trendMonths = {!! json_encode($trendMonths) !!};
         var trendTotals = {!! json_encode($trendTotals) !!};
         
         var trendOptions = {
             series: [{ name: 'Total', data: trendTotals }],
+            theme: { mode: getChartTheme() },
             chart: { type: 'area', height: 320, width: '100%', fontFamily: 'inherit', toolbar: { show: false }, background: 'transparent' },
             colors: ['#0ea5e9'], 
             fill: { type: 'gradient', gradient: { shadeIntensity: 1, opacityFrom: 0.4, opacityTo: 0.05, stops: [0, 100] } },
@@ -182,7 +201,8 @@
                 options: { chart: { height: 280 } }
             }]
         };
-        new ApexCharts(document.querySelector("#trendChart"), trendOptions).render();
+        chartInstances['trend'] = new ApexCharts(document.querySelector("#trendChart"), trendOptions);
+        chartInstances['trend'].render();
 
         // --- 🟢 GRAFIK 2: TOP PELANGGAN (BAR HORIZONTAL) ---
         var topCustomerNames = {!! json_encode($topCustomerNames) !!};
@@ -190,6 +210,7 @@
 
         var topOptions = {
             series: [{ name: 'Total', data: topCustomerTotals }],
+            theme: { mode: getChartTheme() },
             chart: { 
                 type: 'bar', 
                 height: 320, 
@@ -235,7 +256,8 @@
                 }
             }]
         };
-        new ApexCharts(document.querySelector("#topCustomerChart"), topOptions).render();
+        chartInstances['top'] = new ApexCharts(document.querySelector("#topCustomerChart"), topOptions);
+        chartInstances['top'].render();
 
         // --- GRAFIK 3: KOMPOSISI AKTIF (DONUT RESPONSIF) ---
         var active = {{ $activeAmount ?? 0 }};
@@ -244,6 +266,7 @@
 
         var komposisiOptions = {
             series: [active, dueSoon, overdue],
+            theme: { mode: getChartTheme() },
             chart: { type: 'donut', height: 320, width: '100%', fontFamily: 'inherit', background: 'transparent' },
             labels: ['{{ __('active_transactions') }}', '{{ __('needs_billing') }}', '{{ __('past_due_date') }}'],
             colors: ['#3b82f6', '#f59e0b', '#f43f5e'],
@@ -260,7 +283,8 @@
                 }
             }]
         };
-        new ApexCharts(document.querySelector("#komposisiChart"), komposisiOptions).render();
+        chartInstances['komposisi'] = new ApexCharts(document.querySelector("#komposisiChart"), komposisiOptions);
+        chartInstances['komposisi'].render();
 
         // --- GRAFIK 4: LUNAS VS BELUM LUNAS (PIE RESPONSIF) ---
         var paidAmount = {{ $paidAmount ?? 0 }};
@@ -268,6 +292,7 @@
 
         var statusOptions = {
             series: [paidAmount, unpaidAmount],
+            theme: { mode: getChartTheme() },
             chart: { type: 'pie', height: 320, width: '100%', fontFamily: 'inherit', background: 'transparent' },
             labels: ['{{ __('paid') }}', '{{ __('unpaid') }}'],
             colors: ['#10b981', '#f43f5e'], 
@@ -284,7 +309,8 @@
                 }
             }]
         };
-        new ApexCharts(document.querySelector("#statusChart"), statusOptions).render();
+        chartInstances['status'] = new ApexCharts(document.querySelector("#statusChart"), statusOptions);
+        chartInstances['status'].render();
     });
 </script>
 @endsection

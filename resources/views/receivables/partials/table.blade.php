@@ -32,7 +32,7 @@
                     
                     $formattedAmount = 'Rp ' . number_format($item->amount, 0, ',', '.');
                 @endphp
-                <tr class="hover:bg-gray-50/70 dark:hover:bg-slate-800/50 transition-colors duration-200">
+                <tr class="hover:bg-gray-50/70 dark:hover:bg-slate-800/50">
                     <td class="px-6 py-4 whitespace-nowrap">
                         <div class="font-semibold text-gray-900 dark:text-white">{{ $item->customer->name }}</div>
                         <div class="text-xs text-gray-400 dark:text-slate-500 mt-0.5">📞 {{ $item->customer->phone ?? '-' }}</div>
@@ -67,7 +67,7 @@
                                 </form>
                             @else
                                 <button type="button" 
-                                        title="Batalkan Status Lunas" 
+                                        title="{{ __('cancel_paid_status') }}" 
                                         onclick="confirmUnpaid({{ $item->id }}, '{{ addslashes($item->customer->name) }}', '{{ $formattedAmount }}')"
                                         class="p-1.5 text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-slate-700/50 rounded-lg hover:bg-rose-600 dark:hover:bg-rose-600 hover:text-white dark:hover:text-white border border-gray-200 dark:border-slate-600 cursor-pointer">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3" /></svg>
@@ -108,7 +108,7 @@
 </div>
 
 @if($receivables->hasPages())
-    <div class="px-6 py-4 bg-gray-50 dark:bg-slate-800/50 border-t border-gray-200 dark:border-slate-700 transition-colors duration-300">
+    <div class="px-6 py-4 bg-gray-50 dark:bg-slate-800/50 border-t border-gray-200 dark:border-slate-700">
         {{ $receivables->links() }}
     </div>
 @endif

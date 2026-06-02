@@ -3,6 +3,7 @@
         <thead class="text-xs text-gray-700 dark:text-gray-300 uppercase bg-gray-50 dark:bg-slate-700/50 border-b border-gray-200 dark:border-slate-700 tracking-wider font-semibold whitespace-nowrap">
             <tr>
                 <th class="px-6 py-4">{{ __('customer_name') }}</th>
+                <th class="px-6 py-4">{{ __('item_name') }}</th>
                 <th class="px-6 py-4">{{ __('amount') }}</th>
                 <th class="px-6 py-4">{{ __('transaction_date') }}</th>
                 <th class="px-6 py-4">{{ __('due_date') }}</th>
@@ -36,6 +37,9 @@
                     <td class="px-6 py-4 whitespace-nowrap">
                         <div class="font-semibold text-gray-900 dark:text-white">{{ $item->customer->name }}</div>
                         <div class="text-xs text-gray-400 dark:text-slate-500 mt-0.5">📞 {{ $item->customer->phone ?? '-' }}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="font-medium text-gray-700 dark:text-gray-300">{{ $item->item_name }}</div>
                     </td>
                     <td class="px-6 py-4 font-bold text-gray-900 dark:text-white whitespace-nowrap">
                         Rp {{ number_format($item->amount, 0, ',', '.') }}

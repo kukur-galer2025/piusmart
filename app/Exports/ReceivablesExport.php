@@ -48,6 +48,7 @@ class ReceivablesExport implements FromCollection, WithHeadings, WithMapping, Wi
         return [
             __('excel_receivable_customer_name'),
             __('excel_receivable_phone'),
+            __('excel_receivable_item_name'),
             __('excel_receivable_amount'),
             __('excel_receivable_transaction_date'),
             __('excel_receivable_due_date'),
@@ -71,6 +72,7 @@ class ReceivablesExport implements FromCollection, WithHeadings, WithMapping, Wi
         return [
             $item->customer->name,
             $item->customer->phone ?? '-',
+            $item->item_name,
             $item->amount,
             $item->transaction_date->format('d/m/Y'),
             $item->due_date->format('d/m/Y'),
@@ -89,12 +91,12 @@ class ReceivablesExport implements FromCollection, WithHeadings, WithMapping, Wi
                 $highestRow = $sheet->getHighestRow();
                 $totalRow = $highestRow + 1; // Baris baru tepat di bawah data terakhir
 
-                // Menulis teks label dan rumus matematika SUM asli Excel di kolom C
-                $sheet->setCellValue('B' . $totalRow, __('excel_total_label'));
-                $sheet->setCellValue('C' . $totalRow, '=SUM(C2:C' . $highestRow . ')');
+                // Menulis teks label dan rumus matematika SUM asli Excel di kolom D
+                $sheet->setCellValue('C' . $totalRow, __('excel_total_label'));
+                $sheet->setCellValue('D' . $totalRow, '=SUM(D2:D' . $highestRow . ')');
 
                 // Mengatur gaya visual mewah baris akumulasi total (Format Double Border Akuntansi)
-                $sheet->getStyle('A' . $totalRow . ':F' . $totalRow)->applyFromArray([
+                $sheet->getStyle('A' . $totalRow . ':G' . $totalRow)->applyFromArray([
                     'font' => [
                         'bold' => true,
                         'size' => 11,
@@ -117,9 +119,9 @@ class ReceivablesExport implements FromCollection, WithHeadings, WithMapping, Wi
                 ]);
 
                 // Menyelaraskan teks baris akumulasi
-                $sheet->getStyle('B' . $totalRow)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
                 $sheet->getStyle('C' . $totalRow)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
-                $sheet->getStyle('C' . $totalRow)->getNumberFormat()->setFormatCode('#,##0');
+                $sheet->getStyle('D' . $totalRow)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
+                $sheet->getStyle('D' . $totalRow)->getNumberFormat()->setFormatCode('#,##0');
                 $sheet->getRowDimension($totalRow)->setRowHeight(24);
             },
         ];
@@ -132,11 +134,11 @@ class ReceivablesExport implements FromCollection, WithHeadings, WithMapping, Wi
     {
         $highestRow = $sheet->getHighestRow();
 
-        // 1. Format Mata Uang / Ribuan untuk Kolom C (Jumlah Transaksi)
-        $sheet->getStyle('C2:C' . $highestRow)->getNumberFormat()->setFormatCode('#,##0');
+        // 1. Format Mata Uang / Ribuan untuk Kolom D (Jumlah Transaksi)
+        $sheet->getStyle('D2:D' . $highestRow)->getNumberFormat()->setFormatCode('#,##0');
 
         // 2. Desain Header Kolom (Baris 1) - Tema Muted Emerald & Bold White text
-        $sheet->getStyle('A1:F1')->applyFromArray([
+        $sheet->getStyle('A1:G1')->applyFromArray([
             'font' => [
                 'bold' => true,
                 'color' => ['rgb' => 'FFFFFF'],
@@ -160,35 +162,35 @@ class ReceivablesExport implements FromCollection, WithHeadings, WithMapping, Wi
             $sheet->getRowDimension($row)->setRowHeight(20);
             
             if ($row % 2 === 0) {
-                $sheet->getStyle('A' . $row . ':F' . $row)->getFill()->applyFromArray([
+                $sheet->getStyle('A' . $row . ':G' . $row)->getFill()->applyFromArray([
                     'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
                     'startColor' => ['rgb' => 'F8FAFC'],
                 ]);
             }
 
-            // Pewarnaan teks status secara cerdas & kontras di Kolom F
-            $statusCell = $sheet->getCell('F' . $row)->getValue();
+            // Pewarnaan teks status secara cerdas & kontras di Kolom G
+            $statusCell = $sheet->getCell('G' . $row)->getValue();
             $statusColor = '334155';
             
             if ($statusCell === $this->statusPaid) { $statusColor = '047857'; }
             elseif ($statusCell === $this->statusOverdue) { $statusColor = 'B91C1C'; }
             elseif ($statusCell === $this->statusDueSoon) { $statusColor = 'B45309'; }
 
-            $sheet->getStyle('F' . $row)->getFont()->applyFromArray([
+            $sheet->getStyle('G' . $row)->getFont()->applyFromArray([
                 'bold' => true,
                 'color' => ['rgb' => $statusColor]
             ]);
         }
 
         // 4. Tambahkan Garis Batas (Border) Tipis Halus ke seluruh sel tabel
-        $sheet->getStyle('A1:F' . $highestRow)->getBorders()->getAllBorders()->applyFromArray([
+        $sheet->getStyle('A1:G' . $highestRow)->getBorders()->getAllBorders()->applyFromArray([
             'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
             'color' => ['rgb' => 'E2E8F0'],
         ]);
 
         // Meratakan posisi teks di kolom tertentu agar rapi
-        $sheet->getStyle('C2:C' . $highestRow)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
-        $sheet->getStyle('D2:E' . $highestRow)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
-        $sheet->getStyle('F2:F' . $highestRow)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('D2:D' . $highestRow)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
+        $sheet->getStyle('E2:F' . $highestRow)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('G2:G' . $highestRow)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
     }
 }

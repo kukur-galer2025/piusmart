@@ -14,6 +14,7 @@ class Receivable extends Model
 
     protected $fillable = [
         'customer_id',
+        'item_name',
         'amount',
         'transaction_date',
         'due_date',

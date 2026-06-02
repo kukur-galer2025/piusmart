@@ -52,6 +52,28 @@
                 @enderror
             </div>
 
+            {{-- Item Name --}}
+            <div>
+                <label for="item_name" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">{{ __('item_name') }}</label>
+                <div class="relative min-w-0">
+                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 text-gray-400 dark:text-slate-500 shrink-0">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
+                        </svg>
+                    </div>
+                    <input type="text" name="item_name" id="item_name" value="{{ old('item_name') }}" required placeholder="{{ __('item_name_placeholder') }}"
+                           style="box-sizing: border-box;"
+                           class="w-full min-w-0 pl-10 pr-3 py-2.5 text-sm font-medium text-gray-900 dark:text-white bg-gray-50 dark:bg-slate-900 border @error('item_name') border-rose-500 dark:border-rose-500 @else border-gray-200 dark:border-slate-600 @enderror rounded-xl focus:outline-none focus:ring-2 @error('item_name') focus:ring-rose-500 @else focus:ring-emerald-500 @enderror focus:bg-white dark:focus:bg-slate-800">
+                </div>
+                <p class="text-[11px] text-gray-400 dark:text-slate-500 mt-1 font-medium pl-1">💡 {{ __('item_name_helper') }}</p>
+                @error('item_name')
+                    <p class="text-xs text-rose-600 dark:text-rose-400 mt-1.5 flex items-center gap-1 font-medium pl-1">
+                        <svg class="w-3.5 h-3.5 shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" /></svg>
+                        {{ $message }}
+                    </p>
+                @enderror
+            </div>
+
             {{-- Amount --}}
             <div>
                 <label for="amount" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">{{ __('amount') }}</label>

@@ -151,10 +151,11 @@
         <thead>
             <tr>
                 <th style="width: 5%; text-align: center;">{{ __('pdf_no') }}</th>
-                <th style="width: 33%;">{{ __('pdf_customer_name') }}</th>
-                <th style="width: 20%;" class="text-right">{{ __('pdf_amount_rp') }}</th>
-                <th style="width: 14%; text-align: center;">{{ __('pdf_transaction_date') }}</th>
-                <th style="width: 14%; text-align: center;">{{ __('pdf_due_date') }}</th>
+                <th style="width: 25%;">{{ __('pdf_customer_name') }}</th>
+                <th style="width: 15%;">{{ __('pdf_item_name') }}</th>
+                <th style="width: 15%;" class="text-right">{{ __('pdf_amount_rp') }}</th>
+                <th style="width: 13%; text-align: center;">{{ __('pdf_transaction_date') }}</th>
+                <th style="width: 13%; text-align: center;">{{ __('pdf_due_date') }}</th>
                 <th style="width: 14%; text-align: center;">{{ __('pdf_status') }}</th>
             </tr>
         </thead>
@@ -185,6 +186,9 @@
                     <td>
                         <div class="font-bold">{{ $item->customer->name }}</div>
                         <div style="font-size: 8px; color: #64748b; margin-top: 2px;">{{ __('pdf_phone') }} {{ $item->customer->phone ?? '-' }}</div>
+                    </td>
+                    <td>
+                        <div style="font-weight: 500;">{{ $item->item_name }}</div>
                     </td>
                     <td class="text-right font-bold whitespace-nowrap">{{ number_format($item->amount, 0, ',', '.') }}</td>
                     <td class="text-center whitespace-nowrap">{{ $item->transaction_date->format('d/m/Y') }}</td>

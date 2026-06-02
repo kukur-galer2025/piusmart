@@ -82,6 +82,7 @@ class ReceivableController extends Controller
     {
         $validated = $request->validate([
             'customer_id'      => 'required|exists:customers,id',
+            'item_name'        => 'required|string|max:255',
             'amount'           => 'required|numeric|min:1',
             'transaction_date' => 'required|date',
             'due_date'         => 'required|date|after_or_equal:transaction_date',
@@ -101,6 +102,7 @@ class ReceivableController extends Controller
 
         Receivable::create([
             'customer_id'      => $validated['customer_id'],
+            'item_name'        => $validated['item_name'],
             'amount'           => $validated['amount'],
             'transaction_date' => $validated['transaction_date'],
             'due_date'         => $validated['due_date'],
@@ -129,6 +131,7 @@ class ReceivableController extends Controller
     {
         $validated = $request->validate([
             'customer_id'      => 'required|exists:customers,id',
+            'item_name'        => 'required|string|max:255',
             'amount'           => 'required|numeric|min:1',
             'transaction_date' => 'required|date',
             'due_date'         => 'required|date|after_or_equal:transaction_date',
@@ -149,6 +152,7 @@ class ReceivableController extends Controller
         $receivable = Receivable::findOrFail($id);
         $receivable->update([
             'customer_id'      => $validated['customer_id'],
+            'item_name'        => $validated['item_name'],
             'amount'           => $validated['amount'],
             'transaction_date' => $validated['transaction_date'],
             'due_date'         => $validated['due_date'],

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Receivable extends Model
 {
@@ -34,6 +35,29 @@ class Receivable extends Model
     public function customer(): BelongsTo
     {
         return $this->belongsTo(Customer::class);
+    }
+
+    /**
+     * Relasi: Piutang ini memiliki banyak riwayat pembayaran.
+     */
+    public function payments(): HasMany
+    {
+        return $this->hasMany(ReceivablePayment::class);
+    }
+
+    /**
+     * Accessor untuk mendapatkan sisa tagihan (amount - total bayar).
+     */
+    protected function remainingBalance(): Attribute
+    {
+        return Attribute::make(
+            get: function (mixed $value, array $attributes) {
+                $totalPaid = $this->payments()->sum('amount');
+                $remaining = $attributes['amount'] - $totalPaid;
+                
+                return $remaining < 0 ? 0 : $remaining;
+            }
+        );
     }
 
     /**

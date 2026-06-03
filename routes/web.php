@@ -8,6 +8,7 @@ use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\SettingController; // Import Controller Pengaturan Baru
+use App\Http\Controllers\ReceivablePaymentController;
 
 // =========================================================================
 // RUTE AUTENTIKASI (LOGIN & LOGOUT)
@@ -32,9 +33,14 @@ Route::middleware('auth')->group(function () {
     Route::get('/receivables', [ReceivableController::class, 'index'])->name('receivables.index');
     Route::get('/receivables/create', [ReceivableController::class, 'create'])->name('receivables.create');
     Route::post('/receivables', [ReceivableController::class, 'store'])->name('receivables.store');
+    Route::get('/receivables/{id}', [ReceivableController::class, 'show'])->name('receivables.show');
     Route::get('/receivables/{id}/edit', [ReceivableController::class, 'edit'])->name('receivables.edit');
     Route::put('/receivables/{id}', [ReceivableController::class, 'update'])->name('receivables.update');
     Route::delete('/receivables/{id}', [ReceivableController::class, 'destroy'])->name('receivables.destroy');
+
+    // Fitur Pembayaran Cicilan Piutang
+    Route::post('/receivables/{id}/payments', [ReceivablePaymentController::class, 'store'])->name('receivable-payments.store');
+    Route::delete('/receivable-payments/{id}', [ReceivablePaymentController::class, 'destroy'])->name('receivable-payments.destroy');
     
     // Fitur Mengubah Status Pelunasan (Tandai Lunas & Batal Lunas via SweetAlert)
     Route::patch('/receivables/{id}/mark-as-paid', [ReceivableController::class, 'markAsPaid'])->name('receivables.mark-as-paid');

@@ -67,6 +67,18 @@ class ReceivableController extends Controller
     }
 
     /**
+     * Menampilkan halaman detail piutang beserta riwayat pembayarannya.
+     */
+    public function show(int $id): View
+    {
+        $receivable = Receivable::with(['customer', 'payments' => function ($query) {
+            $query->latest('payment_date');
+        }])->findOrFail($id);
+
+        return view('receivables.show', compact('receivable'));
+    }
+
+    /**
      * Menampilkan halaman form tambah piutang.
      */
     public function create(): View

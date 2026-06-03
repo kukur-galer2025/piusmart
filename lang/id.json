@@ -231,5 +231,20 @@
     "stat_period": "Periode",
     "stat_back_to_list": "Kembali ke Daftar Piutang",
     "stat_no_data": "Belum ada data piutang untuk ditampilkan.",
-    "stat_summary_cards": "Ringkasan Finansial"
+    "stat_summary_cards": "Ringkasan Finansial",
+    "receivable_details": "Detail Piutang",
+    "receivable_details_subtitle": "Informasi lengkap piutang dan riwayat pembayaran cicilan.",
+    "total_debt": "Total Hutang",
+    "total_paid": "Total Dibayar",
+    "remaining_balance": "Sisa Tagihan",
+    "payment_history": "Riwayat Pembayaran",
+    "payment_date": "Tanggal Pembayaran",
+    "payment_amount": "Nominal Pembayaran",
+    "no_payment_history": "Belum ada riwayat pembayaran.",
+    "add_payment": "Tambah Pembayaran",
+    "payment_completed_msg": "Piutang ini telah lunas. Anda tidak perlu menambahkan pembayaran lagi.",
+    "save_payment": "Simpan Pembayaran",
+    "confirm_delete_payment_title": "Hapus Pembayaran?",
+    "confirm_delete_payment_text": "Apakah Anda yakin ingin menghapus data riwayat pembayaran ini? Sisa tagihan akan disesuaikan kembali.",
+    "view_details": "Lihat Detail"
 }
